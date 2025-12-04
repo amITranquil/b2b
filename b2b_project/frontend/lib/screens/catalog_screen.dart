@@ -476,6 +476,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   Widget _buildProductCard(Product product, bool isDarkMode) {
     final imageUrl = ApiConfig.getImageUrl(product.localImagePath ?? product.imageUrl);
+    final hasImage = imageUrl.isNotEmpty &&
+                     (product.localImagePath != null || product.imageUrl != null);
 
     return Card(
       elevation: 2,
@@ -484,20 +486,42 @@ class _CatalogScreenState extends State<CatalogScreen> {
         children: [
           Expanded(
             flex: 3,
-            child: imageUrl.isNotEmpty
+            child: hasImage
                 ? Image.network(
                     imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.image_not_supported, size: 64),
+                        color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 64,
+                          color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                        ),
+                      );
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
                       );
                     },
                   )
                 : Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.image, size: 64),
+                    color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                    child: Icon(
+                      Icons.inventory_2_outlined,
+                      size: 64,
+                      color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                    ),
                   ),
           ),
           Expanded(
