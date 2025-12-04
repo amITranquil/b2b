@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/quote.dart';
 import '../services/api_service.dart';
 import '../services/pdf_export_service_web.dart';
+import '../widgets/cost_calculation_dialog.dart';
 
 class QuoteDetailScreen extends StatefulWidget {
   final int quoteId;
@@ -89,6 +90,15 @@ class _QuoteDetailScreenState extends State<QuoteDetailScreen> {
     }
   }
 
+  void _showCostCalculation() {
+    if (_quote == null) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => CostCalculationDialog(quote: _quote!),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +110,12 @@ class _QuoteDetailScreenState extends State<QuoteDetailScreen> {
           title: const Text('Teklif Detayı'),
           actions: [
             if (_quote != null) ...[
+              // Maliyet Hesaplama
+              IconButton(
+                icon: const Icon(Icons.calculate),
+                tooltip: 'Maliyet Analizi',
+                onPressed: _showCostCalculation,
+              ),
               // KDV Toggle
               IconButton(
                 icon: Icon(_showVatDetails ? Icons.visibility : Icons.visibility_off),
