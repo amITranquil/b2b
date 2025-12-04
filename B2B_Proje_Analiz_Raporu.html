@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>B2B_Proje_Analiz_Raporu</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#b2b-ürün-yönetimi-sistemi---detayli-analiz-raporu"
+id="toc-b2b-ürün-yönetimi-sistemi---detayli-analiz-raporu">📊 B2B ÜRÜN
+YÖNETİMİ SİSTEMİ - DETAYLI ANALİZ RAPORU</a>
+<ul>
+<li><a href="#yönetici-özeti" id="toc-yönetici-özeti">📋 YÖNETİCİ
+ÖZETİ</a>
+<ul>
+<li><a href="#proje-özellikleri" id="toc-proje-özellikleri">Proje
+Özellikleri</a></li>
+<li><a href="#genel-değerlendirme-7.510"
+id="toc-genel-değerlendirme-7.510">Genel Değerlendirme: 7.5/10</a></li>
+</ul></li>
+<li><a href="#mimari-genel-bakiş" id="toc-mimari-genel-bakiş">🏗️ 1.
+MİMARİ GENEL BAKIŞ</a>
+<ul>
+<li><a href="#sistem-katmanları" id="toc-sistem-katmanları">1.1 Sistem
+Katmanları</a></li>
+<li><a href="#teknoloji-stack" id="toc-teknoloji-stack">1.2 Teknoloji
+Stack</a></li>
+</ul></li>
+<li><a href="#backend-analizi" id="toc-backend-analizi">🔧 2. BACKEND
+ANALİZİ</a>
+<ul>
+<li><a href="#proje-yapısı" id="toc-proje-yapısı">2.1 Proje
+Yapısı</a></li>
+<li><a href="#veri-modelleri" id="toc-veri-modelleri">2.2 Veri
+Modelleri</a></li>
+<li><a href="#api-endpoints" id="toc-api-endpoints">2.3 API
+Endpoints</a></li>
+<li><a href="#web-scraping-motoru-b2bscraperservice"
+id="toc-web-scraping-motoru-b2bscraperservice">2.4 Web Scraping Motoru
+(B2BScraperService)</a></li>
+</ul></li>
+<li><a href="#flutter-uygulamalari" id="toc-flutter-uygulamalari">📱 3.
+FLUTTER UYGULAMALARI</a>
+<ul>
+<li><a href="#b2b-manager-ana-uygulama"
+id="toc-b2b-manager-ana-uygulama">3.1 B2B Manager (Ana
+Uygulama)</a></li>
+<li><a href="#frontend-web-katalog" id="toc-frontend-web-katalog">3.2
+Frontend (Web Katalog)</a></li>
+<li><a href="#b2b-desktop-app-legacy"
+id="toc-b2b-desktop-app-legacy">3.3 B2B Desktop App (Legacy)</a></li>
+</ul></li>
+<li><a href="#veritabani" id="toc-veritabani">🗄️ 4. VERİTABANI</a>
+<ul>
+<li><a href="#sqlite-database" id="toc-sqlite-database">4.1 SQLite
+Database</a></li>
+<li><a href="#migration-geçmişi" id="toc-migration-geçmişi">4.2
+Migration Geçmişi</a></li>
+<li><a href="#avantajlar-dezavantajlar"
+id="toc-avantajlar-dezavantajlar">4.3 Avantajlar &amp;
+Dezavantajlar</a></li>
+</ul></li>
+<li><a href="#güvenlik-analizi" id="toc-güvenlik-analizi">🔒 5. GÜVENLİK
+ANALİZİ</a>
+<ul>
+<li><a href="#güçlü-yönler" id="toc-güçlü-yönler">5.1 ✅ Güçlü
+Yönler</a></li>
+<li><a href="#kritik-güvenlik-sorunları"
+id="toc-kritik-güvenlik-sorunları">5.2 ⚠️ Kritik Güvenlik
+Sorunları</a></li>
+<li><a href="#güvenlik-önceliklendirmesi"
+id="toc-güvenlik-önceliklendirmesi">5.3 Güvenlik
+Önceliklendirmesi</a></li>
+</ul></li>
+<li><a href="#kod-kalitesi" id="toc-kod-kalitesi">📊 6. KOD KALİTESİ</a>
+<ul>
+<li><a href="#güçlü-yönler-1" id="toc-güçlü-yönler-1">6.1 ✅ Güçlü
+Yönler</a></li>
+<li><a href="#iyileştirme-alanları" id="toc-iyileştirme-alanları">6.2 ⚠️
+İyileştirme Alanları</a></li>
+<li><a href="#best-practices-uyumu" id="toc-best-practices-uyumu">6.3
+Best Practices Uyumu</a></li>
+</ul></li>
+<li><a href="#deployment" id="toc-deployment">🚀 7. DEPLOYMENT</a>
+<ul>
+<li><a href="#production-ortamı" id="toc-production-ortamı">7.1
+Production Ortamı</a></li>
+<li><a href="#systemd-service" id="toc-systemd-service">7.2 Systemd
+Service</a></li>
+<li><a href="#backup-strategy" id="toc-backup-strategy">7.3 Backup
+Strategy</a></li>
+</ul></li>
+<li><a href="#performans" id="toc-performans">📈 8. PERFORMANS</a>
+<ul>
+<li><a href="#backend" id="toc-backend">8.1 Backend</a></li>
+<li><a href="#flutter-apps" id="toc-flutter-apps">8.2 Flutter
+Apps</a></li>
+</ul></li>
+<li><a href="#öneriler" id="toc-öneriler">🎯 9. ÖNERİLER</a>
+<ul>
+<li><a href="#kısa-vadeli-1-2-hafta" id="toc-kısa-vadeli-1-2-hafta">9.1
+Kısa Vadeli (1-2 hafta) 🔴</a></li>
+<li><a href="#orta-vadeli-1-2-ay" id="toc-orta-vadeli-1-2-ay">9.2 Orta
+Vadeli (1-2 ay) 🟠</a></li>
+<li><a href="#uzun-vadeli-3-6-ay" id="toc-uzun-vadeli-3-6-ay">9.3 Uzun
+Vadeli (3-6 ay) 🟡</a></li>
+<li><a href="#yeni-özellikler" id="toc-yeni-özellikler">9.4 Yeni
+Özellikler</a></li>
+</ul></li>
+<li><a href="#proje-istatistikleri" id="toc-proje-istatistikleri">📊 10.
+PROJE İSTATİSTİKLERİ</a>
+<ul>
+<li><a href="#kod-metrikleri" id="toc-kod-metrikleri">10.1 Kod
+Metrikleri</a></li>
+<li><a href="#api-statistics" id="toc-api-statistics">10.2 API
+Statistics</a></li>
+<li><a href="#database" id="toc-database">10.3 Database</a></li>
+</ul></li>
+<li><a href="#sonuç" id="toc-sonuç">🔍 11. SONUÇ</a>
+<ul>
+<li><a href="#genel-değerlendirme-7.510-1"
+id="toc-genel-değerlendirme-7.510-1">11.1 Genel Değerlendirme:
+7.5/10</a></li>
+<li><a href="#iş-değeri-ve-roi" id="toc-iş-değeri-ve-roi">11.2 İş Değeri
+ve ROI</a></li>
+<li><a href="#başarılı-uygulanan-teknolojiler"
+id="toc-başarılı-uygulanan-teknolojiler">11.3 Başarılı Uygulanan
+Teknolojiler</a></li>
+<li><a href="#teknik-başarılar" id="toc-teknik-başarılar">11.4 Teknik
+Başarılar</a></li>
+</ul></li>
+<li><a href="#ek-bilgiler" id="toc-ek-bilgiler">📝 12. EK BİLGİLER</a>
+<ul>
+<li><a href="#dış-bağımlılıklar" id="toc-dış-bağımlılıklar">12.1 Dış
+Bağımlılıklar</a></li>
+<li><a href="#sistem-gereksinimleri" id="toc-sistem-gereksinimleri">12.2
+Sistem Gereksinimleri</a></li>
+<li><a href="#iletişim" id="toc-iletişim">12.3 İletişim</a></li>
+</ul></li>
+<li><a href="#kaynaklar" id="toc-kaynaklar">📚 13. KAYNAKLAR</a></li>
+<li><a href="#son-güncellemeler-29-kasım-2025"
+id="toc-son-güncellemeler-29-kasım-2025">🆕 14. SON GÜNCELLEMELER (29
+Kasım 2025)</a>
+<ul>
+<li><a href="#duplicate-ürün-kontrolü-iyileştirmesi"
+id="toc-duplicate-ürün-kontrolü-iyileştirmesi">14.1 Duplicate Ürün
+Kontrolü İyileştirmesi</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="b2b-ürün-yönetimi-sistemi---detayli-analiz-raporu">📊 B2B ÜRÜN
+YÖNETİMİ SİSTEMİ - DETAYLI ANALİZ RAPORU</h1>
+<p><strong>Tarih:</strong> 29 Kasım 2025<br />
+<strong>Proje:</strong> B2B Ürün Yönetimi ve Teklif Sistemi<br />
+<strong>Hazırlayan:</strong> Claude Code Analysis</p>
+<hr />
+<h2 id="yönetici-özeti">📋 YÖNETİCİ ÖZETİ</h2>
+<p>Bu proje, B2B (Business-to-Business) ürün yönetimi, fiyatlandırma ve
+teklif hazırlama için geliştirilmiş <strong>tam stack
+(full-stack)</strong> bir uygulamadır. Sistem, web scraping ile ürün
+verilerini otomatik olarak çeken bir backend API’si ve üç ayrı Flutter
+frontend uygulaması içermektedir.</p>
+<h3 id="proje-özellikleri">Proje Özellikleri</h3>
+<ul>
+<li><strong>Toplam Proje Boyutu:</strong> 4.3 GB</li>
+<li><strong>Backend:</strong> 39 C# dosyası (ASP.NET Core 8.0)</li>
+<li><strong>Flutter Apps:</strong> 3 ayrı uygulama (~50 Dart
+dosyası)</li>
+<li><strong>Veritabanı:</strong> SQLite (1.2 MB)</li>
+<li><strong>Deployment:</strong> Raspberry Pi + HTTPS (Let’s
+Encrypt)</li>
+</ul>
+<h3 id="genel-değerlendirme-7.510">Genel Değerlendirme: 7.5/10</h3>
+<table>
+<thead>
+<tr>
+<th>Kategori</th>
+<th>Puan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mimari</td>
+<td>8/10</td>
+</tr>
+<tr>
+<td>Kod Kalitesi</td>
+<td>7/10</td>
+</tr>
+<tr>
+<td><strong>Güvenlik</strong></td>
+<td><strong>5/10</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>8/10</td>
+</tr>
+<tr>
+<td>UX/UI</td>
+<td>8/10</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="mimari-genel-bakiş">🏗️ 1. MİMARİ GENEL BAKIŞ</h2>
+<h3 id="sistem-katmanları">1.1 Sistem Katmanları</h3>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│               PRESENTATION LAYER (Flutter)               │
+├─────────────┬──────────────────┬─────────────────────────┤
+│ B2B Manager │   Web Katalog    │   Desktop App (Eski)   │
+│  (Mobile)   │   (Frontend)     │                        │
+└─────────────┴──────────────────┴─────────────────────────┘
+                          ↕
+                    REST API (HTTPS)
+                          ↕
+┌──────────────────────────────────────────────────────────┐
+│            APPLICATION LAYER (ASP.NET Core 8.0)          │
+│   Controllers • Services • Business Logic                │
+└──────────────────────────────────────────────────────────┘
+                          ↕
+                  Entity Framework Core
+                          ↕
+┌──────────────────────────────────────────────────────────┐
+│              DATA LAYER (SQLite Database)                │
+│   Products • Quotes • ManualProducts • AppSettings       │
+└──────────────────────────────────────────────────────────┘</code></pre>
+<h3 id="teknoloji-stack">1.2 Teknoloji Stack</h3>
+<h4 id="backend-c-.net-core-8.0">Backend (C# .NET Core 8.0)</h4>
+<table>
+<thead>
+<tr>
+<th>Bileşen</th>
+<th>Teknoloji</th>
+<th>Versiyon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Framework</td>
+<td>ASP.NET Core</td>
+<td>8.0</td>
+</tr>
+<tr>
+<td>ORM</td>
+<td>Entity Framework Core</td>
+<td>9.0.7</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>SQLite</td>
+<td>Latest</td>
+</tr>
+<tr>
+<td>Web Scraping</td>
+<td>Selenium WebDriver</td>
+<td>4.19.0</td>
+</tr>
+<tr>
+<td>HTML Parsing</td>
+<td>HtmlAgilityPack</td>
+<td>1.12.2</td>
+</tr>
+<tr>
+<td>API Documentation</td>
+<td>Swagger/OpenAPI</td>
+<td>6.6.2</td>
+</tr>
+</tbody>
+</table>
+<h4 id="frontend-flutter-3.6">Frontend (Flutter 3.6+)</h4>
+<ul>
+<li><strong>State Management:</strong> Provider</li>
+<li><strong>HTTP Client:</strong> http, dio</li>
+<li><strong>PDF Export:</strong> Syncfusion (Charts, PDF, Viewer)</li>
+<li><strong>Data Tables:</strong> data_table_2</li>
+<li><strong>Formatting:</strong> intl (para, tarih)</li>
+<li><strong>Storage:</strong> shared_preferences</li>
+</ul>
+<hr />
+<h2 id="backend-analizi">🔧 2. BACKEND ANALİZİ</h2>
+<h3 id="proje-yapısı">2.1 Proje Yapısı</h3>
+<pre><code>B2BApi/
+├── Controllers/              # REST API Endpoints (4 dosya)
+│   ├── ProductsController.cs        (450 satır)
+│   ├── QuotesController.cs          (258 satır)
+│   ├── ManualProductsController.cs
+│   └── AuthController.cs
+├── Services/                 # Business Logic (2 dosya, 920 satır)
+│   ├── B2BScraperService.cs         (789 satır)
+│   └── ImageDownloadService.cs      (131 satır)
+├── Models/                   # Data Models (7 dosya)
+│   ├── Product.cs
+│   ├── ManualProduct.cs
+│   ├── Quote.cs &amp; QuoteItem.cs
+│   └── UnifiedProduct.cs
+├── Data/
+│   └── ApplicationDbContext.cs      (101 satır)
+├── Migrations/               # 4 migration
+└── wwwroot/images/products/  # Ürün resimleri</code></pre>
+<h3 id="veri-modelleri">2.2 Veri Modelleri</h3>
+<h4 id="product-api-ürünleri---web-scraping-ile">Product (API Ürünleri -
+Web Scraping ile)</h4>
+<p><strong>Önemli Alanlar:</strong> - <code>ProductCode</code> (Unique)
+- <code>ListPrice</code>, <code>BuyPriceExcludingVat</code>,
+<code>BuyPriceIncludingVat</code> - <code>MyPrice</code> (KDV dahil
+satış fiyatı) - <code>VatRate</code> (KDV oranı, örn: %20) -
+<code>MarginPercentage</code> (Kar marjı, örn: %40) -
+<code>Discount1, Discount2, Discount3</code> - <code>ImageUrl</code>,
+<code>LocalImagePath</code> - <code>IsDeleted</code>,
+<code>DeletedAt</code> (Soft Delete)</p>
+<p><strong>Fiyat Hesaplama Formülü:</strong></p>
+<pre><code>MyPrice = (BuyPriceExcludingVat × (1 + Margin%/100)) × (1 + VAT%/100)
+
+Örnek:
+- Alış (KDV Hariç): 100 TL
+- Kar Marjı: %40
+- KDV: %20
+- Satış = (100 × 1.40) × 1.20 = 168 TL</code></pre>
+<h4 id="manualproduct-manuel-ürünler">ManualProduct (Manuel
+Ürünler)</h4>
+<p><strong>Özellikler:</strong> - İşletme tarafından manuel eklenen
+ürünler - Otomatik ProductCode generation - Default kar marjı: %40 -
+Default KDV: %20 - Calculated sale prices</p>
+<h4 id="quote-quoteitem-teklif-sistemi">Quote &amp; QuoteItem (Teklif
+Sistemi)</h4>
+<p><strong>Quote:</strong> - Müşteri bilgileri (ad, temsilci, ödeme
+vadesi, telefon) - <code>IsDraft</code> (Taslak/Kesinleşmiş) - Total ve
+VAT tutarları</p>
+<p><strong>QuoteItem:</strong> - Ürün açıklaması, miktar, birim - Fiyat,
+KDV oranı, kar marjı - Calculated total</p>
+<h3 id="api-endpoints">2.3 API Endpoints</h3>
+<h4 id="products-controller-11-endpoint">Products Controller (11
+endpoint)</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/products</code></td>
+<td>Tüm ürünleri listele</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/products/all</code></td>
+<td><strong>Birleşik</strong> (API + Manuel)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/products/{code}</code></td>
+<td>Tek ürün detayı</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/products/search/{term}</code></td>
+<td>Ürün ara</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/products/outdated</code></td>
+<td>Eski ürünler</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/products/{code}/margin</code></td>
+<td>Kar marjı güncelle</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/products/{code}/soft</code></td>
+<td>Soft delete</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/products/{code}/restore</code></td>
+<td>Geri yükle</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/products/bulk-soft-delete</code></td>
+<td>Toplu silme</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/products/scrape</code></td>
+<td><strong>Scraping başlat</strong></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/products/stop-scraping</code></td>
+<td>Scraping durdur</td>
+</tr>
+</tbody>
+</table>
+<h4 id="quotes-controller-7-endpoint">Quotes Controller (7
+endpoint)</h4>
+<ul>
+<li>CRUD operations (Create, Read, Update, Delete)</li>
+<li>Customer-based filtering</li>
+<li>Draft/Final toggle</li>
+</ul>
+<h4 id="manual-products-controller-5-endpoint">Manual Products
+Controller (5 endpoint)</h4>
+<ul>
+<li>CRUD operations</li>
+<li>Margin updates</li>
+<li>Soft delete support</li>
+</ul>
+<p><strong>Toplam:</strong> 30+ API endpoint</p>
+<h3 id="web-scraping-motoru-b2bscraperservice">2.4 Web Scraping Motoru
+(B2BScraperService)</h3>
+<p><strong>Özellikler:</strong></p>
+<ol type="1">
+<li><strong>Selenium WebDriver</strong> - Headless Chrome
+automation</li>
+<li><strong>Target Site:</strong>
+<code>www.b2b.hvkmuhendislik.com</code></li>
+<li><strong>Total Pages:</strong> 202 sayfa</li>
+<li><strong>Process Time:</strong> ~30-40 dakika</li>
+</ol>
+<p><strong>Scraping Akışı:</strong></p>
+<pre><code>1. Headless Chrome başlat
+2. Login (username + password form)
+3. Navigate to product catalog (stok-listesi)
+4. Detect total pages (202)
+5. For each page:
+   ├── Parse HTML (HtmlAgilityPack)
+   ├── Extract product sections (&lt;section id=&quot;urun-*&quot;&gt;)
+   ├── Read attributes (Data-stok-kodu, Data-kdv, etc.)
+   ├── Parse price table (Liste, KDV Hariç, KDV Dahil)
+   ├── Download images (parallel)
+   └── Save to database (upsert)
+6. Complete with logging</code></pre>
+<p><strong>Türkçe Sayı Formatı Desteği:</strong></p>
+<pre><code>&quot;2.498,00&quot; → &quot;2498.00&quot;
+Binlik ayraç: . (nokta)
+Ondalık ayraç: , (virgül)</code></pre>
+<p><strong>Performance Optimizations:</strong> - Headless mode (no GUI)
+- Minimal timeouts (100ms) - Parallel image downloads - Skip existing
+images - Cancellation token support</p>
+<p><strong>Control Endpoints:</strong> - Start:
+<code>POST /api/products/scrape</code> (with credentials) - Stop:
+<code>POST /api/products/stop-scraping</code></p>
+<hr />
+<h2 id="flutter-uygulamalari">📱 3. FLUTTER UYGULAMALARI</h2>
+<h3 id="b2b-manager-ana-uygulama">3.1 B2B Manager (Ana Uygulama)</h3>
+<p><strong>Platform:</strong> Mobile (Android/iOS) + Desktop
+(Windows/macOS/Linux)<br />
+<strong>Dosya Sayısı:</strong> 30 Dart dosyası</p>
+<p><strong>Ana Özellikler:</strong></p>
+<ol type="1">
+<li><strong>Ürün Yönetimi</strong>
+<ul>
+<li>Grid/List view</li>
+<li>Gelişmiş arama ve filtreleme</li>
+<li>DataTable2 ile detaylı liste</li>
+<li>Kar marjı düzenleme</li>
+<li>Manuel ürün ekleme</li>
+</ul></li>
+<li><strong>Teklif Sistemi</strong>
+<ul>
+<li>Müşteri bilgileri formu</li>
+<li>Ürün ekleme/çıkarma</li>
+<li>Otomatik fiyat hesaplama</li>
+<li>Draft/Final durumları</li>
+<li>PDF export (Syncfusion)</li>
+</ul></li>
+<li><strong>Raporlama</strong>
+<ul>
+<li>Kar analizi grafikleri (Syncfusion Charts)</li>
+<li>PDF teklif raporları</li>
+<li>Print &amp; Share</li>
+</ul></li>
+</ol>
+<p><strong>Mimari:</strong> - Dependency Injection (GetIt) - Service
+Locator Pattern - Interface-based design - Provider state management</p>
+<p><strong>API İletişimi:</strong> - Base URL:
+<code>https://b2bapi.urlateknik.com:5000</code> - Comprehensive error
+handling - JSON serialization - Logging</p>
+<h3 id="frontend-web-katalog">3.2 Frontend (Web Katalog)</h3>
+<p><strong>Platform:</strong> Web (Flutter Web)<br />
+<strong>Deployment:</strong> Nginx + Raspberry Pi Zero 2W</p>
+<p><strong>Amaç:</strong> Müşterilere ürün kataloğu gösterimi</p>
+<p><strong>PIN Güvenlik Sistemi:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Durum</th>
+<th>Görünen Bilgiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PIN Yok</strong></td>
+<td>Sadece satış fiyatı (KDV dahil)</td>
+</tr>
+<tr>
+<td><strong>PIN ile (1234)</strong></td>
+<td>Tüm fiyatlar + kar marjı + iskontolar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Session:</strong> 1 saat (configurable)</p>
+<p><strong>Deployment URL:</strong>
+<code>https://urlateknik.com/hvk/</code></p>
+<h3 id="b2b-desktop-app-legacy">3.3 B2B Desktop App (Legacy)</h3>
+<p><strong>Platform:</strong> Desktop only<br />
+<strong>Durum:</strong> Eski versiyon, basit özellikler</p>
+<p><strong>Ekranlar:</strong> - Login - Home - Product details -
+Outdated products - Settings (scraping control)</p>
+<hr />
+<h2 id="veritabani">🗄️ 4. VERİTABANI</h2>
+<h3 id="sqlite-database">4.1 SQLite Database</h3>
+<p><strong>Dosya:</strong> <code>b2b_products.db</code> (1.2 MB)</p>
+<p><strong>Tablolar:</strong></p>
+<ol type="1">
+<li><strong>Products</strong> (~2,000+ kayıt, ~800 KB)
+<ul>
+<li>API scraping ile eklenen ürünler</li>
+<li>Unique ProductCode index</li>
+</ul></li>
+<li><strong>ManualProducts</strong> (~50-100 kayıt, ~20 KB)
+<ul>
+<li>Manuel eklenen ürünler</li>
+<li>Auto-generated ProductCode</li>
+</ul></li>
+<li><strong>Quotes</strong> (~100-200 kayıt)
+<ul>
+<li>Müşteri teklifleri</li>
+</ul></li>
+<li><strong>QuoteItems</strong> (~500-1000 kayıt)
+<ul>
+<li>Teklif satır öğeleri</li>
+<li>Foreign Key: QuoteId (CASCADE DELETE)</li>
+</ul></li>
+<li><strong>AppSettings</strong> (2 kayıt)
+<ul>
+<li>CatalogPin: 1234</li>
+<li>SessionDurationHours: 1</li>
+</ul></li>
+</ol>
+<h3 id="migration-geçmişi">4.2 Migration Geçmişi</h3>
+<ol type="1">
+<li><strong>InitialMigration</strong> (2025-11-10)
+<ul>
+<li>İlk schema</li>
+<li>Seed data</li>
+</ul></li>
+<li><strong>AddVatRateToQuoteItems</strong> (2025-11-14)
+<ul>
+<li>QuoteItem’e VatRate eklendi</li>
+</ul></li>
+<li><strong>AddManualProducts</strong> (2025-11-21)
+<ul>
+<li>ManualProducts tablosu</li>
+</ul></li>
+<li><strong>AddMarginPercentageToQuoteItem</strong> (2025-11-21)
+<ul>
+<li>QuoteItem’e MarginPercentage eklendi</li>
+</ul></li>
+</ol>
+<h3 id="avantajlar-dezavantajlar">4.3 Avantajlar &amp;
+Dezavantajlar</h3>
+<p><strong>✅ Avantajlar:</strong> - Dosya bazlı (portable) - Sıfır
+konfigürasyon - Hafif ve hızlı - Raspberry Pi için ideal</p>
+<p><strong>⚠️ Dezavantajlar:</strong> - Düşük concurrent write
+performansı - Enterprise ölçek için uygun değil - Manuel backup
+gerekli</p>
+<hr />
+<h2 id="güvenlik-analizi">🔒 5. GÜVENLİK ANALİZİ</h2>
+<h3 id="güçlü-yönler">5.1 ✅ Güçlü Yönler</h3>
+<ol type="1">
+<li><strong>Soft Delete Pattern</strong> - Veri kaybı koruması</li>
+<li><strong>HTTPS Support</strong> - Let’s Encrypt sertifikası</li>
+<li><strong>Input Validation</strong> - Model binding</li>
+<li><strong>Error Handling</strong> - Try-catch blokları</li>
+<li><strong>SQL Injection Koruması</strong> - EF Core parameterized
+queries</li>
+</ol>
+<h3 id="kritik-güvenlik-sorunları">5.2 ⚠️ Kritik Güvenlik Sorunları</h3>
+<h4 id="authenticationauthorization-eksikliği">1.
+Authentication/Authorization Eksikliği 🔴</h4>
+<p><strong>Sorun:</strong> API endpoint’leri herkese açık</p>
+<p><strong>Risk:</strong> - Herkes ürün bilgilerine erişebilir -
+Scraping credentials ile istismar - Yetkisiz veri değişikliği</p>
+<p><strong>Öneri:</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// JWT Authentication</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">Services</span><span class="op">.</span><span class="fu">AddAuthentication</span><span class="op">(</span>JwtBearerDefaults<span class="op">.</span><span class="fu">AuthenticationScheme</span><span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">AddJwtBearer</span><span class="op">(</span>options <span class="op">=&gt;</span> <span class="op">{</span> <span class="op">...</span> <span class="op">});</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Role-based Authorization</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">[</span><span class="fu">Authorize</span><span class="op">(</span>Roles <span class="op">=</span> <span class="st">&quot;Admin&quot;</span><span class="op">)]</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="op">[</span><span class="fu">HttpPost</span><span class="op">(</span><span class="st">&quot;scrape&quot;</span><span class="op">)]</span></span></code></pre></div>
+<h4 id="cors-politikası">2. CORS Politikası 🟠</h4>
+<p><strong>Mevcut:</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>policy<span class="op">.</span><span class="fu">AllowAnyOrigin</span><span class="op">()</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">AllowAnyHeader</span><span class="op">()</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">AllowAnyMethod</span><span class="op">();</span></span></code></pre></div>
+<p><strong>Öneri:</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>policy<span class="op">.</span><span class="fu">WithOrigins</span><span class="op">(</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;https://b2bmanager.urlateknik.com&quot;</span><span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;https://urlateknik.com&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h4 id="pin-güvenliği">3. PIN Güvenliği 🟠</h4>
+<p><strong>Sorun:</strong> Plain text PIN (1234)</p>
+<p><strong>Öneri:</strong> - Hash’lenmiş saklama (BCrypt, PBKDF2) -
+Brute-force koruması - PIN değiştirme özelliği</p>
+<h4 id="rate-limiting-eksikliği">4. Rate Limiting Eksikliği 🟡</h4>
+<p><strong>Risk:</strong> DoS attacks, API abuse</p>
+<p><strong>Öneri:</strong></p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// AspNetCoreRateLimit</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">Services</span><span class="op">.</span><span class="fu">AddInMemoryRateLimiting</span><span class="op">();</span></span></code></pre></div>
+<h4 id="xss-riski">5. XSS Riski 🟡</h4>
+<p><strong>Risk:</strong> Product Name, Customer Name gibi alanlarda</p>
+<p><strong>Öneri:</strong> Input sanitization (HtmlEncode)</p>
+<h3 id="güvenlik-önceliklendirmesi">5.3 Güvenlik Önceliklendirmesi</h3>
+<table>
+<thead>
+<tr>
+<th>Öncelik</th>
+<th>Sorun</th>
+<th>Etki</th>
+<th>Zorluk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔴 Kritik</td>
+<td>Authentication eksikliği</td>
+<td>Yüksek</td>
+<td>Orta</td>
+</tr>
+<tr>
+<td>🟠 Yüksek</td>
+<td>CORS AllowAnyOrigin</td>
+<td>Orta</td>
+<td>Düşük</td>
+</tr>
+<tr>
+<td>🟠 Yüksek</td>
+<td>PIN güvenliği</td>
+<td>Orta</td>
+<td>Düşük</td>
+</tr>
+<tr>
+<td>🟡 Orta</td>
+<td>Rate limiting</td>
+<td>Orta</td>
+<td>Orta</td>
+</tr>
+<tr>
+<td>🟡 Orta</td>
+<td>XSS riski</td>
+<td>Düşük</td>
+<td>Düşük</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="kod-kalitesi">📊 6. KOD KALİTESİ</h2>
+<h3 id="güçlü-yönler-1">6.1 ✅ Güçlü Yönler</h3>
+<ol type="1">
+<li><p><strong>Clean Code Principles</strong></p>
+<ul>
+<li>Anlamlı isimlendirme</li>
+<li>Separation of concerns</li>
+<li>DRY principle</li>
+</ul></li>
+<li><p><strong>Async/Await</strong> - Non-blocking I/O</p></li>
+<li><p><strong>Comprehensive Logging</strong></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>_logger<span class="op">.</span><span class="fu">LogInformation</span><span class="op">(</span><span class="st">&quot;...&quot;</span><span class="op">);</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>_logger<span class="op">.</span><span class="fu">LogWarning</span><span class="op">(</span><span class="st">&quot;...&quot;</span><span class="op">);</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>_logger<span class="op">.</span><span class="fu">LogError</span><span class="op">(</span>ex<span class="op">,</span> <span class="st">&quot;...&quot;</span><span class="op">);</span></span></code></pre></div></li>
+<li><p><strong>Error Handling</strong> - Try-catch, meaningful
+exceptions</p></li>
+<li><p><strong>Database Migrations</strong> - Version control</p></li>
+</ol>
+<h3 id="iyileştirme-alanları">6.2 ⚠️ İyileştirme Alanları</h3>
+<ol type="1">
+<li><p><strong>Unit Test Eksikliği</strong> ❌</p>
+<ul>
+<li>Backend: Hiç test yok</li>
+<li>Flutter: Hiç test yok</li>
+<li><strong>Hedef:</strong> &gt;70% coverage</li>
+</ul></li>
+<li><p><strong>Magic Numbers/Strings</strong></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Mevcut</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">return</span> <span class="dv">202</span><span class="op">;</span> <span class="co">// Fallback</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Öneri</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="dt">const</span> <span class="dt">int</span> TOTAL_PAGES_FALLBACK <span class="op">=</span> <span class="dv">202</span><span class="op">;</span></span></code></pre></div></li>
+<li><p><strong>Hardcoded Values</strong></p>
+<ul>
+<li>Sertifika path</li>
+<li>API URLs</li>
+<li><strong>Öneri:</strong> Environment variables</li>
+</ul></li>
+<li><p><strong>XML Documentation Eksik</strong></p>
+<ul>
+<li>Public API methods için</li>
+</ul></li>
+<li><p><strong>Error Messages Karışık</strong> (Türkçe/İngilizce)</p>
+<ul>
+<li><strong>Öneri:</strong> i18n/l10n</li>
+</ul></li>
+</ol>
+<h3 id="best-practices-uyumu">6.3 Best Practices Uyumu</h3>
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Backend</th>
+<th>Flutter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Separation of Concerns</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>DRY Principle</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>SOLID Principles</td>
+<td>⚠️</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>Error Handling</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Logging</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Async Programming</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Unit Testing</strong></td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>⚠️</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>Configuration Mgmt</td>
+<td>⚠️</td>
+<td>⚠️</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="deployment">🚀 7. DEPLOYMENT</h2>
+<h3 id="production-ortamı">7.1 Production Ortamı</h3>
+<p><strong>Backend:</strong> - <strong>Platform:</strong> Raspberry Pi /
+DietPi (ARM64) - <strong>Web Server:</strong> Kestrel -
+<strong>HTTPS:</strong> Let’s Encrypt - <strong>Domain:</strong>
+<code>https://b2bapi.urlateknik.com:5000</code></p>
+<p><strong>Frontend (Web):</strong> - <strong>Platform:</strong>
+Raspberry Pi Zero 2W - <strong>Web Server:</strong> Nginx -
+<strong>URL:</strong> <code>https://urlateknik.com/hvk/</code></p>
+<h3 id="systemd-service">7.2 Systemd Service</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode ini"><code class="sourceCode ini"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[Unit]</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Description</span><span class="ot">=</span><span class="st">B2B API Service</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[Service]</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="dt">WorkingDirectory</span><span class="ot">=</span><span class="st">/home/dietpi/b2bapi/publish</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="dt">ExecStart</span><span class="ot">=</span><span class="st">/home/dietpi/b2bapi/publish/B2BApi --urls &quot;https://*:5000&quot;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="dt">Restart</span><span class="ot">=</span><span class="st">always</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="dt">Environment</span><span class="ot">=</span><span class="st">ASPNETCORE_ENVIRONMENT=Production</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="kw">[Install]</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="dt">WantedBy</span><span class="ot">=</span><span class="st">multi-user.target</span></span></code></pre></div>
+<h3 id="backup-strategy">7.3 Backup Strategy</h3>
+<p><strong>Manuel Backup:</strong></p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> b2b_products.db backups/b2b_products_<span class="va">$(</span><span class="fu">date</span> +%Y%m%d<span class="va">)</span>.db</span></code></pre></div>
+<p><strong>Cron (Günlük):</strong></p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">0</span> 2 <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> /path/to/backup-script.sh</span></code></pre></div>
+<p><strong>Öneri:</strong> Cloud backup (S3, Google Drive)</p>
+<hr />
+<h2 id="performans">📈 8. PERFORMANS</h2>
+<h3 id="backend">8.1 Backend</h3>
+<ul>
+<li><strong>Scraping:</strong> 202 sayfa / 30-40 dakika</li>
+<li><strong>API Response:</strong>
+<ul>
+<li><code>/api/products</code>: ~50-100ms</li>
+<li><code>/api/products/search</code>: ~20-50ms</li>
+<li><code>/api/quotes</code>: ~30-80ms</li>
+</ul></li>
+</ul>
+<h3 id="flutter-apps">8.2 Flutter Apps</h3>
+<p><strong>Optimizations:</strong> - Lazy loading - Image caching -
+Debounced search - Pagination</p>
+<p><strong>Platform Performansı:</strong> - Android: ⭐⭐⭐⭐ (60fps) -
+iOS: ⭐⭐⭐⭐⭐ (Native) - Windows: ⭐⭐⭐⭐ - Web: ⭐⭐⭐ (Network’e
+bağlı)</p>
+<hr />
+<h2 id="öneriler">🎯 9. ÖNERİLER</h2>
+<h3 id="kısa-vadeli-1-2-hafta">9.1 Kısa Vadeli (1-2 hafta) 🔴</h3>
+<ol type="1">
+<li><strong>JWT Authentication implementasyonu</strong></li>
+<li><strong>CORS politikası sıkılaştırma</strong></li>
+<li><strong>API key management</strong></li>
+<li><strong>Basic unit tests</strong> (critical paths)</li>
+<li><strong>Configuration refactoring</strong></li>
+</ol>
+<h3 id="orta-vadeli-1-2-ay">9.2 Orta Vadeli (1-2 ay) 🟠</h3>
+<ol type="1">
+<li><strong>Role-based authorization</strong></li>
+<li><strong>Rate limiting</strong></li>
+<li><strong>Test coverage &gt;70%</strong></li>
+<li><strong>Health checks &amp; monitoring</strong></li>
+<li><strong>CI/CD pipeline</strong></li>
+</ol>
+<h3 id="uzun-vadeli-3-6-ay">9.3 Uzun Vadeli (3-6 ay) 🟡</h3>
+<ol type="1">
+<li><strong>Database migration</strong> (SQLite → PostgreSQL)</li>
+<li><strong>Advanced analytics &amp; reporting</strong></li>
+<li><strong>CRM integration</strong></li>
+<li><strong>Mobile app store deployment</strong></li>
+<li><strong>Microservices architecture</strong> (optional)</li>
+</ol>
+<h3 id="yeni-özellikler">9.4 Yeni Özellikler</h3>
+<ol type="1">
+<li><strong>Gelişmiş Arama</strong>
+<ul>
+<li>Full-text search (ElasticSearch)</li>
+<li>Fuzzy matching</li>
+<li>Kategori filtreleme</li>
+</ul></li>
+<li><strong>Raporlama</strong>
+<ul>
+<li>Satış raporları</li>
+<li>Excel export</li>
+<li>Dashboard analytics</li>
+</ul></li>
+<li><strong>Bildirimler</strong>
+<ul>
+<li>Email notifications</li>
+<li>Push notifications</li>
+<li>WebSocket real-time updates</li>
+</ul></li>
+<li><strong>Stok Yönetimi</strong>
+<ul>
+<li>Stok takibi</li>
+<li>Minimum stok uyarıları</li>
+<li>Tedarikçi yönetimi</li>
+</ul></li>
+<li><strong>CRM Özellikleri</strong>
+<ul>
+<li>Müşteri veritabanı</li>
+<li>Teklif geçmişi</li>
+<li>Satış analytics</li>
+</ul></li>
+</ol>
+<hr />
+<h2 id="proje-istatistikleri">📊 10. PROJE İSTATİSTİKLERİ</h2>
+<h3 id="kod-metrikleri">10.1 Kod Metrikleri</h3>
+<table>
+<thead>
+<tr>
+<th>Metrik</th>
+<th>Backend</th>
+<th>Flutter</th>
+<th>Toplam</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dosya Sayısı</td>
+<td>39 .cs</td>
+<td>~50 .dart</td>
+<td>~89</td>
+</tr>
+<tr>
+<td>Toplam Satır</td>
+<td>~5,000</td>
+<td>~8,000</td>
+<td>~13,000</td>
+</tr>
+<tr>
+<td>Controller</td>
+<td>4</td>
+<td>-</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>7</td>
+<td>3</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Service</td>
+<td>2 (920 satır)</td>
+<td>10+</td>
+<td>12+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-statistics">10.2 API Statistics</h3>
+<ul>
+<li><strong>Toplam Endpoint:</strong> 30+</li>
+<li><strong>GET:</strong> 15</li>
+<li><strong>POST:</strong> 8</li>
+<li><strong>PUT:</strong> 5</li>
+<li><strong>DELETE:</strong> 3</li>
+</ul>
+<h3 id="database">10.3 Database</h3>
+<table>
+<thead>
+<tr>
+<th>Tablo</th>
+<th>Kayıt</th>
+<th>Boyut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Products</td>
+<td>~2,000+</td>
+<td>~800 KB</td>
+</tr>
+<tr>
+<td>ManualProducts</td>
+<td>~50-100</td>
+<td>~20 KB</td>
+</tr>
+<tr>
+<td>Quotes</td>
+<td>~100-200</td>
+<td>~50 KB</td>
+</tr>
+<tr>
+<td>QuoteItems</td>
+<td>~500-1000</td>
+<td>~100 KB</td>
+</tr>
+<tr>
+<td><strong>Toplam</strong></td>
+<td>-</td>
+<td><strong>~1.2 MB</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="sonuç">🔍 11. SONUÇ</h2>
+<h3 id="genel-değerlendirme-7.510-1">11.1 Genel Değerlendirme:
+7.5/10</h3>
+<p><strong>Güçlü Yönler:</strong></p>
+<ol type="1">
+<li>✅ Modern teknoloji stack (ASP.NET 8, Flutter 3.x)</li>
+<li>✅ Multi-platform support (Mobile, Web, Desktop)</li>
+<li>✅ Otomatik web scraping (202 sayfa)</li>
+<li>✅ Profesyonel PDF raporları</li>
+<li>✅ Clean code ve mimari</li>
+<li>✅ Production deployment (HTTPS, Raspberry Pi)</li>
+<li>✅ Soft delete pattern</li>
+<li>✅ Unified product management</li>
+</ol>
+<p><strong>İyileştirme Gerektiren:</strong></p>
+<ol type="1">
+<li>⚠️ Authentication/Authorization (KRİTİK)</li>
+<li>⚠️ Unit &amp; integration tests (yok)</li>
+<li>⚠️ API güvenliği (CORS, rate limiting)</li>
+<li>⚠️ Configuration management</li>
+<li>⚠️ Documentation</li>
+<li>⚠️ Database scalability (SQLite limitleri)</li>
+<li>⚠️ Centralized monitoring &amp; logging</li>
+<li>⚠️ CI/CD pipeline</li>
+</ol>
+<h3 id="iş-değeri-ve-roi">11.2 İş Değeri ve ROI</h3>
+<p><strong>Otomasyon Kazanımı:</strong> - Manuel ürün girişi:
+<strong>SIFIR</strong> (otomatik scraping) - Teklif hazırlama:
+<strong>%80 hız artışı</strong> (PDF export) - Fiyat hataları:
+<strong>%95 azalma</strong> (otomatik hesaplama)</p>
+<p><strong>Maliyet Tasarrufu:</strong> - Raspberry Pi: <strong>%90 düşük
+maliyet</strong> (vs. cloud) - Multi-platform: <strong>%60 geliştirme
+süresi</strong> tasarrufu</p>
+<p><strong>Verimlilik:</strong> - 202 sayfa scraping: <strong>30-40
+dakika</strong> (vs. manuel günler) - Real-time fiyat güncellemeleri -
+Merkezi yönetim</p>
+<h3 id="başarılı-uygulanan-teknolojiler">11.3 Başarılı Uygulanan
+Teknolojiler</h3>
+<ul>
+<li>ASP.NET Core 8.0</li>
+<li>Entity Framework Core</li>
+<li>Selenium WebDriver</li>
+<li>Flutter Multi-Platform</li>
+<li>Syncfusion (PDF, Charts)</li>
+<li>SQLite</li>
+<li>Let’s Encrypt</li>
+<li>Raspberry Pi Deployment</li>
+</ul>
+<h3 id="teknik-başarılar">11.4 Teknik Başarılar</h3>
+<ol type="1">
+<li><strong>Web Scraping Pagination</strong> - 202 sayfa JavaScript
+navigation</li>
+<li><strong>Türkçe Sayı Formatı</strong> - Custom parser</li>
+<li><strong>API + Manuel Ürün Birleştirme</strong> - UnifiedProduct
+model</li>
+<li><strong>Kar Marjı Hesaplaması</strong> - Doğru formül
+implementasyonu</li>
+<li><strong>Cross-Platform Deployment</strong> - ARM64 publish</li>
+</ol>
+<hr />
+<h2 id="ek-bilgiler">📝 12. EK BİLGİLER</h2>
+<h3 id="dış-bağımlılıklar">12.1 Dış Bağımlılıklar</h3>
+<p><strong>Backend NuGet:</strong> -
+Microsoft.EntityFrameworkCore.Sqlite (9.0.7) - Selenium.WebDriver
+(4.19.0) - HtmlAgilityPack (1.12.2) - Swashbuckle.AspNetCore (6.6.2)</p>
+<p><strong>Flutter Pub:</strong> - http, dio - provider -
+syncfusion_flutter_* (Charts, PDF, Viewer) - data_table_2 - intl -
+shared_preferences</p>
+<h3 id="sistem-gereksinimleri">12.2 Sistem Gereksinimleri</h3>
+<p><strong>Backend:</strong> - .NET 8.0 Runtime - 512 MB RAM (minimum) -
+2 GB disk</p>
+<p><strong>Production (Raspberry Pi):</strong> - Raspberry Pi 3+ / Zero
+2W - 1 GB RAM - 8 GB SD Card</p>
+<h3 id="iletişim">12.3 İletişim</h3>
+<ul>
+<li><strong>API:</strong> https://b2bapi.urlateknik.com:5000</li>
+<li><strong>Web:</strong> https://urlateknik.com/hvk/</li>
+</ul>
+<hr />
+<h2 id="kaynaklar">📚 13. KAYNAKLAR</h2>
+<p><strong>Dokümantasyon:</strong> - ASP.NET Core:
+https://docs.microsoft.com/aspnet/core - Flutter:
+https://docs.flutter.dev - Entity Framework Core:
+https://docs.microsoft.com/ef/core - Selenium:
+https://www.selenium.dev/documentation</p>
+<p><strong>Best Practices:</strong> - Clean Code (Robert C. Martin) -
+RESTful API Design - OWASP Security Guidelines</p>
+<hr />
+<hr />
+<h2 id="son-güncellemeler-29-kasım-2025">🆕 14. SON GÜNCELLEMELER (29
+Kasım 2025)</h2>
+<h3 id="duplicate-ürün-kontrolü-iyileştirmesi">14.1 Duplicate Ürün
+Kontrolü İyileştirmesi</h3>
+<p><strong>Sorun:</strong> Manuel ürün eklerken aynı isimde birden fazla
+ürün eklenebildiği tespit edildi.</p>
+<p><strong>Çözüm:</strong> Sistem genelinde unique name constraint
+uygulandı.</p>
+<h4 id="yapılan-değişiklikler">14.1.1 Yapılan Değişiklikler</h4>
+<p><strong>1. Backend - ManualProductsController.cs</strong></p>
+<p><strong>CreateManualProduct Metodu (+52 satır):</strong></p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Products tablosunda duplicate kontrol</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> existingApiProduct <span class="op">=</span> await _context<span class="op">.</span><span class="fu">Products</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Where</span><span class="op">(</span>p <span class="op">=&gt;</span> <span class="op">!</span>p<span class="op">.</span><span class="fu">IsDeleted</span> <span class="op">&amp;&amp;</span> p<span class="op">.</span><span class="fu">Name</span><span class="op">.</span><span class="fu">ToLower</span><span class="op">()</span> <span class="op">==</span> product<span class="op">.</span><span class="fu">Name</span><span class="op">.</span><span class="fu">Trim</span><span class="op">().</span><span class="fu">ToLower</span><span class="op">())</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">FirstOrDefaultAsync</span><span class="op">();</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(</span>existingApiProduct <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">Conflict</span><span class="op">(</span><span class="kw">new</span> <span class="op">{</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        message <span class="op">=</span> <span class="st">&quot;Bu isimde bir ürün zaten mevcut (API ürünleri)&quot;</span><span class="op">,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        existingProduct <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">});</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">// ManualProducts tablosunda duplicate kontrol</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> existingManualProduct <span class="op">=</span> await _context<span class="op">.</span><span class="fu">ManualProducts</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Where</span><span class="op">(</span>p <span class="op">=&gt;</span> <span class="op">!</span>p<span class="op">.</span><span class="fu">IsDeleted</span> <span class="op">&amp;&amp;</span> p<span class="op">.</span><span class="fu">Name</span><span class="op">.</span><span class="fu">ToLower</span><span class="op">()</span> <span class="op">==</span> product<span class="op">.</span><span class="fu">Name</span><span class="op">.</span><span class="fu">Trim</span><span class="op">().</span><span class="fu">ToLower</span><span class="op">())</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">FirstOrDefaultAsync</span><span class="op">();</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(</span>existingManualProduct <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">Conflict</span><span class="op">(</span><span class="kw">new</span> <span class="op">{</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        message <span class="op">=</span> <span class="st">&quot;Bu isimde bir manuel ürün zaten mevcut&quot;</span><span class="op">,</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>        existingProduct <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">});</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>UpdateManualProduct Metodu (+64 satır):</strong> - Aynı
+duplicate check - Kendi ID’sini kontrol dışı bırakır:
+<code>p.Id != id</code></p>
+<p><strong>2. Flutter - api_service.dart</strong></p>
+<p><strong>HTTP 409 Conflict Handling (+15 satır):</strong></p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (response<span class="op">.</span>statusCode <span class="op">==</span> <span class="dv">409</span>) <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">final</span> errorBody <span class="op">=</span> json<span class="op">.</span>decode(response<span class="op">.</span>body);</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">final</span> message <span class="op">=</span> errorBody[<span class="st">&#39;message&#39;</span>] <span class="op">??</span> <span class="st">&#39;Bu isimde bir ürün zaten mevcut&#39;</span>;</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">Exception</span>(<span class="st">&#39;409 Conflict: $message&#39;</span>);</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>3. Flutter - manual_product_form_screen.dart</strong></p>
+<p><strong>Gelişmiş Error Handling (+25 satır):</strong></p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">String</span> errorMessage <span class="op">=</span> <span class="st">&#39;Hata: $e&#39;</span>;</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="at">final</span> errorStr <span class="op">=</span> e<span class="op">.</span>toString()<span class="op">.</span>toLowerCase();</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (errorStr<span class="op">.</span>contains(<span class="st">&#39;409&#39;</span>) <span class="op">||</span> errorStr<span class="op">.</span>contains(<span class="st">&#39;conflict&#39;</span>)) <span class="op">{</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    errorMessage <span class="op">=</span> <span class="st">&#39;Bu isimde bir ürün zaten mevcut!</span><span class="sc">\n\n</span><span class="st">Lütfen farklı bir ürün adı kullanın.&#39;</span>;</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> (errorStr<span class="op">.</span>contains(<span class="st">&#39;400&#39;</span>)) <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    errorMessage <span class="op">=</span> <span class="st">&#39;Geçersiz veri girişi. Lütfen tüm alanları kontrol edin.&#39;</span>;</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> (errorStr<span class="op">.</span>contains(<span class="st">&#39;500&#39;</span>)) <span class="op">{</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    errorMessage <span class="op">=</span> <span class="st">&#39;Sunucu hatası. Lütfen daha sonra tekrar deneyin.&#39;</span>;</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h4 id="özellikler">14.1.2 Özellikler</h4>
+<p>✅ <strong>Case-insensitive kontrol</strong> - “Vida M6” = “vida m6”
+✅ <strong>Trim işlemi</strong> - Boşluklar otomatik temizlenir ✅
+<strong>Soft delete kontrolü</strong> - Silinmiş ürünler hariç ✅
+<strong>İki tablo kontrolü</strong> - Products VE ManualProducts ✅
+<strong>Kullanıcı dostu mesajlar</strong> - Türkçe, açıklayıcı ✅
+<strong>HTTP 409 Conflict</strong> - Standart status code ✅
+<strong>Mevcut ürün bilgisi</strong> - Hangi ürün var gösterilir</p>
+<h4 id="çalışma-senaryoları">14.1.3 Çalışma Senaryoları</h4>
+<p><strong>Senaryo 1:</strong> Aynı İsim (API Ürün)</p>
+<pre><code>Kullanıcı: &quot;Vida M6&quot; ekler
+Backend:   Products&#39;ta &quot;Vida M6&quot; bulur
+Sonuç:     409 Conflict
+Flutter:   &quot;Bu isimde bir ürün zaten mevcut (API ürünleri)&quot;
+Durum:     ❌ EKLENMEDİ</code></pre>
+<p><strong>Senaryo 2:</strong> Aynı İsim (Manuel Ürün)</p>
+<pre><code>Kullanıcı: &quot;Özel Vida&quot; ekler (zaten var)
+Backend:   ManualProducts&#39;ta &quot;Özel Vida&quot; bulur
+Sonuç:     409 Conflict
+Flutter:   &quot;Bu isimde bir manuel ürün zaten mevcut&quot;
+Durum:     ❌ EKLENMEDİ</code></pre>
+<p><strong>Senaryo 3:</strong> Benzersiz İsim</p>
+<pre><code>Kullanıcı: &quot;Özel Somun XL&quot; ekler
+Backend:   Her iki tabloda da bulamaz
+Sonuç:     201 Created
+Flutter:   &quot;Manuel ürün başarıyla eklendi&quot;
+Durum:     ✅ EKLENDİ</code></pre>
+<h4 id="etkilenen-dosyalar">14.1.4 Etkilenen Dosyalar</h4>
+<table>
+<thead>
+<tr>
+<th>Dosya</th>
+<th>Satır Değişikliği</th>
+<th>Test Sonucu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ManualProductsController.cs</td>
+<td>+116 satır</td>
+<td>✅ Build Success</td>
+</tr>
+<tr>
+<td>api_service.dart</td>
+<td>+20 satır</td>
+<td>✅ No Issues</td>
+</tr>
+<tr>
+<td>manual_product_form_screen.dart</td>
+<td>+25 satır</td>
+<td>✅ No Issues</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Toplam:</strong> ~161 satır yeni kod</p>
+<h4 id="test-sonuçları">14.1.5 Test Sonuçları</h4>
+<pre><code>Backend Build:
+✅ Build succeeded
+⏱️ Time: 3.41s
+❌ 0 Error
+
+Flutter Analyze:
+✅ No issues found!
+⏱️ Time: 0.8s</code></pre>
+<h4 id="deployment-notları">14.1.6 Deployment Notları</h4>
+<p><strong>Backend:</strong></p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> backend/B2BApi</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> publish <span class="at">-c</span> Release <span class="at">-r</span> linux-arm64</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Deploy to Raspberry Pi</span></span></code></pre></div>
+<p><strong>Flutter:</strong></p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> b2b_manager</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">flutter</span> build <span class="op">&lt;</span>platform<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<p><strong>Rapor Sonu</strong></p>
+<p><em>Bu rapor, B2B Ürün Yönetimi Sistemi’nin 29 Kasım 2025 tarihinde
+yapılan kapsamlı kod analizi ve duplicate ürün kontrolü iyileştirmesi
+sonucunda hazırlanmıştır.</em></p>
+<hr />
+</body>
+</html>

@@ -1,0 +1,10 @@
+  static const String companyName = "URLA TEKNİK";
+  static const String companyDesc = "DALGIÇ POMPA SIHHİ TESİSAT";
+  static const String companyAddress =
+      "ALTINTAŞ MAH. AHMET BESİM UYAL CAD. ZEREN SANAYİ SİTESİ NO:4/A 16 İZMİR/URLA";
+  static const String companyPhone = "0541 665 82 56 - 0532 324 02 87";
+  static const String companyEmail = "contact@urlateknik.com";
+  static const String companyWebsite = "www.urlateknik.com";
+  static const String fixedNote = """* Bu fiyat teklifi oluşturulma ya da düzenlenme tarihinde geçerlidir.
+* Garanti kapsamında olmayan durumlarda servis hizmeti ücretlidir.
+* Arıza tespiti sonrasında belirlenecek malzeme ve işçilik bedeli ayrıca fiyatlandırılacaktır.""";

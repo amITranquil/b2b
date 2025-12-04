@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hvk_project", "hvk_project", "{878B6C0D-9BFE-A10A-0B3A-4E29A6BFAA33}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{68E3E024-3948-A8A9-3B00-DA0505745196}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HVKApi", "hvk_project\backend\HVKApi\HVKApi.csproj", "{B1478FF0-A34B-5084-15EC-11A534FAC37D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1478FF0-A34B-5084-15EC-11A534FAC37D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1478FF0-A34B-5084-15EC-11A534FAC37D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1478FF0-A34B-5084-15EC-11A534FAC37D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1478FF0-A34B-5084-15EC-11A534FAC37D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68E3E024-3948-A8A9-3B00-DA0505745196} = {878B6C0D-9BFE-A10A-0B3A-4E29A6BFAA33}
+		{B1478FF0-A34B-5084-15EC-11A534FAC37D} = {68E3E024-3948-A8A9-3B00-DA0505745196}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A43304C8-6932-4671-8FF0-518BF57B4163}
+	EndGlobalSection
+EndGlobal

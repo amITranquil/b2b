@@ -1,0 +1,51 @@
+@B2BApi_HostAddress = http://localhost:5042
+
+# Get all products
+GET {{B2BApi_HostAddress}}/api/products
+Accept: application/json
+
+###
+
+# Search products
+GET {{B2BApi_HostAddress}}/api/products/search/test
+Accept: application/json
+
+###
+
+# Get specific product
+GET {{B2BApi_HostAddress}}/api/products/TEST001
+Accept: application/json
+
+###
+
+# Update product margin
+PUT {{B2BApi_HostAddress}}/api/products/TEST001/margin
+Content-Type: application/json
+
+25.0
+
+###
+
+# Start scraping
+POST {{B2BApi_HostAddress}}/api/products/scrape
+Accept: application/json
+
+###
+
+# Debug: Test HVK connection
+GET {{B2BApi_HostAddress}}/api/products/test-connection
+Accept: application/json
+
+###
+
+# Debug: Test login only
+POST {{B2BApi_HostAddress}}/api/products/debug-login
+Accept: application/json
+
+###
+
+# Debug: Test scraping only
+GET {{B2BApi_HostAddress}}/api/products/debug-scrape
+Accept: application/json
+
+###

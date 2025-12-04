@@ -1,0 +1,31 @@
+#!/usr/bin/expect -f
+set timeout -1
+set password "TRansit2022,."
+
+# Deploy API
+spawn rsync -avz --exclude=*.db --exclude=*.db-shm --exclude=*.db-wal --exclude=wwwroot/*.html --exclude=wwwroot/*.js --exclude=wwwroot/*.css --exclude=wwwroot/*.md ./bin/Release/publish/ root@192.168.1.8:/home/dietpi/b2bapi/publish/
+expect {
+    "password:" { send "$password\r" }
+}
+expect eof
+puts "API kopyalandı"
+
+sleep 1
+
+# Fix permissions
+spawn ssh root@192.168.1.8 "chown -R dietpi:dietpi /home/dietpi/b2bapi/publish && chmod +x /home/dietpi/b2bapi/publish/B2BApi"
+expect {
+    "password:" { send "$password\r" }
+}
+expect eof
+puts "İzinler düzenlendi"
+
+sleep 1
+
+# Restart service
+spawn ssh root@192.168.1.8 "systemctl restart b2b-api.service && sleep 3 && systemctl status b2b-api.service --no-pager"
+expect {
+    "password:" { send "$password\r" }
+}
+expect eof
+puts "Service yeniden başlatıldı"

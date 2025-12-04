@@ -1,0 +1,190 @@
+=================================================================
+🚀 B2B MANUEL DEPLOYMENT KOMUTLARI
+=================================================================
+
+Bu komutları YENİ BİR TERMINAL penceresinde SIRAYLA çalıştırın.
+Her komut için "TRansit2022,." şifresi sorulacak.
+
+-----------------------------------------------------------------
+1️⃣  Server'da klasörleri oluştur
+-----------------------------------------------------------------
+ssh dietpi@192.168.1.8 "mkdir -p /home/dietpi/b2bapi/publish && sudo mkdir -p /var/www/hvk && sudo chown dietpi:dietpi /var/www/hvk"
+
+-----------------------------------------------------------------
+2️⃣  API dosyalarını kopyala (RESİMLER DAHİL!)
+-----------------------------------------------------------------
+cd "/Users/sakinburakcivelek/flutter_and_c#/b2b/b2b_project/backend/B2BApi"
+
+rsync -avz --progress \
+    --exclude='*.db' \
+    --exclude='*.db-shm' \
+    --exclude='*.db-wal' \
+    --exclude='wwwroot/*.html' \
+    --exclude='wwwroot/*.js' \
+    --exclude='wwwroot/*.css' \
+    --exclude='wwwroot/*.md' \
+    ./bin/Release/publish/ dietpi@192.168.1.8:/home/dietpi/b2bapi/publish/
+
+# NOT: wwwroot/images/ klasörü API ile birlikte kopyalanacak!
+
+-----------------------------------------------------------------
+3️⃣  Website dosyalarını kopyala
+-----------------------------------------------------------------
+rsync -avz --progress \
+    --exclude='.DS_Store' \
+    --exclude='*.md' \
+    --exclude='*.sh' \
+    ./wwwroot/ dietpi@192.168.1.8:/var/www/hvk/
+
+-----------------------------------------------------------------
+4️⃣  Production ayarlarını oluştur
+-----------------------------------------------------------------
+ssh dietpi@192.168.1.8
+
+# Server'da (dietpi@192.168.1.8):
+
+cat > /home/dietpi/b2bapi/publish/appsettings.Production.json << 'EOF'
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=/home/dietpi/b2bapi/b2b_products.db"
+  },
+  "AllowedHosts": "*",
+  "Kestrel": {
+    "Endpoints": {
+      "Http": {
+        "Url": "http://localhost:5000"
+      }
+    }
+  }
+}
+EOF
+
+-----------------------------------------------------------------
+5️⃣  Systemd service oluştur
+-----------------------------------------------------------------
+# Hala server'dasınız (dietpi@192.168.1.8):
+
+sudo tee /etc/systemd/system/b2b-api.service > /dev/null << 'EOF'
+[Unit]
+Description=B2B API Service
+After=network.target
+
+[Service]
+Type=notify
+User=dietpi
+WorkingDirectory=/home/dietpi/b2bapi/publish
+ExecStart=/usr/bin/dotnet B2BApi.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=b2b-api
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://localhost:5000
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+-----------------------------------------------------------------
+6️⃣  Service'i başlat
+-----------------------------------------------------------------
+sudo systemctl daemon-reload
+sudo systemctl enable b2b-api.service
+sudo systemctl start b2b-api.service
+sudo systemctl status b2b-api.service
+
+-----------------------------------------------------------------
+7️⃣  lighttpd modüllerini kontrol et
+-----------------------------------------------------------------
+# Proxy modülü yüklü mü kontrol et:
+lighttpd -v
+
+# Eğer mod_proxy yoksa:
+sudo apt-get install lighttpd-mod-proxy
+
+-----------------------------------------------------------------
+8️⃣  lighttpd konfigürasyonu oluştur
+-----------------------------------------------------------------
+sudo nano /etc/lighttpd/conf-available/99-hvk.conf
+
+# Aşağıdaki içeriği yapıştırın:
+
+server.modules += ( "mod_proxy" )
+
+$HTTP["url"] =~ "^/hvk/" {
+    alias.url = ( "/hvk/" => "/var/www/hvk/" )
+
+    $HTTP["url"] !~ "^/hvk/api/" {
+        index-file.names = ( "index.html" )
+
+        url.rewrite-if-not-file = (
+            "^/hvk/(.*)$" => "/hvk/index.html"
+        )
+    }
+}
+
+$HTTP["url"] =~ "^/hvk/api/" {
+    proxy.balance = "round-robin"
+    proxy.server = (
+        "" => (
+            (
+                "host" => "127.0.0.1",
+                "port" => 5000
+            )
+        )
+    )
+}
+
+-----------------------------------------------------------------
+9️⃣  lighttpd konfigürasyonunu aktifleştir
+-----------------------------------------------------------------
+sudo lighty-enable-mod proxy
+sudo ln -sf /etc/lighttpd/conf-available/99-hvk.conf /etc/lighttpd/conf-enabled/
+sudo systemctl restart lighttpd
+sudo systemctl status lighttpd
+
+-----------------------------------------------------------------
+🔟 Test et
+-----------------------------------------------------------------
+# API test:
+curl -I http://localhost:5000/api/products
+
+# Website test:
+curl -I http://192.168.1.8/hvk/
+
+# Browser'da aç:
+# http://192.168.1.8/hvk/
+
+# Server'dan çık:
+exit
+
+=================================================================
+✅ DEPLOYMENT TAMAMLANDI!
+=================================================================
+
+📍 Erişim URL'leri:
+   - Website: http://192.168.1.8/hvk/
+   - API: http://192.168.1.8/hvk/api/
+
+📋 Yararlı Komutlar:
+
+# API durumunu kontrol et:
+ssh dietpi@192.168.1.8 "sudo systemctl status b2b-api.service"
+
+# API loglarını izle:
+ssh dietpi@192.168.1.8 "sudo journalctl -u b2b-api.service -f"
+
+# lighttpd durumunu kontrol et:
+ssh dietpi@192.168.1.8 "sudo systemctl status lighttpd"
+
+# lighttpd loglarını kontrol et:
+ssh dietpi@192.168.1.8 "sudo tail -f /var/log/lighttpd/error.log"
+
+=================================================================

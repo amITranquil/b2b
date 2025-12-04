@@ -1,0 +1,89 @@
+# Flutter/Dart build outputs
+**/build/
+**/.dart_tool/
+**/pubspec.lock
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+
+# Flutter web build
+**/web/build/
+
+# iOS build outputs
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/.generated/
+**/ios/Runner.xcworkspace/
+**/ios/Runner.xcodeproj/project.pbxproj.bak
+**/ios/DerivedData/
+
+# macOS build outputs
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+**/macos/.symlinks/
+
+# Android build outputs
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/.idea/
+**/android/app/build/
+
+# .NET build outputs
+**/backend/**/bin/
+**/backend/**/obj/
+**/backend/**/publish/
+**/backend/**/*.user
+**/backend/**/*.suo
+**/backend/.vs/
+**/B2BApi/bin/
+**/B2BApi/obj/
+**/B2BApi/publish/
+**/B2BApi/.vs/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables (keep example)
+.env
+.env.*
+!.env.example
+
+# Certificates (security)
+**/certs/
+*.pfx
+*.pem
+*.key
+*.crt
+
+# Logs
+*.log
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Package manager
+node_modules/
+
+# Product images (large files, stored separately)
+**/wwwroot/images/products/
+!**/wwwroot/images/products/README.md

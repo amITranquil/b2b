@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Bu site Google ve diğer arama motorları tarafından indexlenmemelidir
+# RPi Zero 2W üzerinde çalışan lokal B2B katalog sitesidir

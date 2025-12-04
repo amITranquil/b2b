@@ -1,0 +1,25 @@
+================================================================================
+          B2B ÜRÜN YÖNETİMİ SİSTEMİ - DETAYLI ANALİZ RAPORU
+================================================================================
+
+Tarih: 29 Kasım 2025
+Proje: B2B Ürün Yönetimi ve Teklif Sistemi
+Hazırlayan: Claude Code Analysis
+
+================================================================================
+YÖNETİCİ ÖZETİ
+================================================================================
+
+Bu rapor, konuşma penceresinde tam olarak görüntülenmektedir.
+Detaylı rapor için lütfen aşağıdaki dosyayı kontrol edin.
+
+NOT: PDF oluşturmak için şu komutları kullanabilirsiniz:
+
+Yöntem 1 - Tarayıcı ile:
+  Aşağıdaki komutu çalıştırın, açılan dosyayı tarayıcıda "Yazdır > PDF olarak kaydet" yapın
+
+Yöntem 2 - Markdown to PDF (pandoc gerekli):
+  brew install pandoc
+  pandoc B2B_Proje_Raporu.md -o B2B_Proje_Raporu.pdf
+
+Rapor özeti bu dosyada bulunmaktadır.
