@@ -3,27 +3,45 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/catalog_screen.dart';
 import 'services/theme_service.dart';
+import 'widgets/skeleton_loader.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-
-  // Tema tercihini yükle
-  final themeService = ThemeService();
-  await themeService.loadThemePreference();
-
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final themeService = ThemeService();
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  final ThemeService _themeService = ThemeService();
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await dotenv.load(fileName: ".env");
+    await _themeService.loadThemePreference();
+
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: themeService.isDarkMode,
+      valueListenable: _themeService.isDarkMode,
       builder: (context, isDarkMode, child) {
         return MaterialApp(
           title: 'URLA TEKNİK - Ürün Kataloğu',
@@ -44,7 +62,11 @@ class MyApp extends StatelessWidget {
             Locale('en', 'US'),
           ],
           locale: const Locale('tr', 'TR'),
-          home: const CatalogScreen(),
+          home: _isInitialized
+              ? const CatalogScreen()
+              : const Scaffold(
+                  body: SkeletonLoader(itemCount: 30),
+                ),
         );
       },
     );

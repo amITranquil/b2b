@@ -6,7 +6,14 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/theme_service.dart';
 import '../config/api_config.dart';
+import '../widgets/skeleton_loader.dart';
 import 'quotes_screen.dart';
+
+enum SortOption {
+  none,
+  priceLowToHigh,
+  priceHighToLow,
+}
 
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({super.key});
@@ -21,12 +28,16 @@ class _CatalogScreenState extends State<CatalogScreen> {
   final ThemeService _themeService = ThemeService();
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _pinController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   List<Product> _products = [];
   List<Product> _filteredProducts = [];
   bool _isLoading = true;
   bool _isAuthenticated = false;
   String? _error;
+
+  // Sorting
+  SortOption _currentSort = SortOption.none;
 
   @override
   void initState() {
@@ -54,6 +65,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       setState(() {
         _products = products.where((p) => !p.isDeleted).toList();
         _filteredProducts = _products;
+        _sortProducts();
         _isLoading = false;
       });
 
@@ -73,6 +85,56 @@ class _CatalogScreenState extends State<CatalogScreen> {
     }
   }
 
+  void _sortProducts() {
+    List<Product> sorted;
+
+    switch (_currentSort) {
+      case SortOption.priceLowToHigh:
+        sorted = List.from(_filteredProducts);
+        sorted.sort((a, b) => a.myPrice.compareTo(b.myPrice));
+        break;
+      case SortOption.priceHighToLow:
+        sorted = List.from(_filteredProducts);
+        sorted.sort((a, b) => b.myPrice.compareTo(a.myPrice));
+        break;
+      case SortOption.none:
+        // Orijinal listeyi kopyala
+        sorted = List.from(_products);
+        // Arama varsa filtrele
+        if (_searchController.text.isNotEmpty) {
+          final upperQuery = _toUpperCaseTurkish(_searchController.text);
+          sorted = sorted.where((product) {
+            return _toUpperCaseTurkish(product.name).contains(upperQuery) ||
+                _toUpperCaseTurkish(product.productCode).contains(upperQuery);
+          }).toList();
+        }
+        break;
+    }
+
+    _filteredProducts = sorted;
+  }
+
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _onSortChanged(SortOption? newSort) {
+    if (newSort == null || newSort == _currentSort) return;
+
+    setState(() {
+      _currentSort = newSort;
+      _sortProducts();
+    });
+
+    _scrollToTop();
+  }
+
   String _toUpperCaseTurkish(String text) {
     // Türkçe karakterleri koruyarak büyük harfe çevir
     return text
@@ -90,7 +152,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
     if (query.isEmpty) {
       setState(() {
         _filteredProducts = _products;
+        _sortProducts();
       });
+      _scrollToTop();
       return;
     }
 
@@ -100,7 +164,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
         return _toUpperCaseTurkish(product.name).contains(upperQuery) ||
             _toUpperCaseTurkish(product.productCode).contains(upperQuery);
       }).toList();
+      _sortProducts();
     });
+
+    _scrollToTop();
   }
 
   void _showPinDialog() {
@@ -383,7 +450,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   Widget _buildBody(bool isDarkMode) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SkeletonLoader(itemCount: 30);
     }
 
     if (_error != null) {
@@ -406,8 +473,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
     return Column(
       children: [
+        // Search Field
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: TextField(
             controller: _searchController,
             inputFormatters: [
@@ -438,6 +506,62 @@ class _CatalogScreenState extends State<CatalogScreen> {
             onChanged: _filterProducts,
           ),
         ),
+
+        // Sorting Dropdown
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Row(
+            children: [
+              const Icon(Icons.sort, size: 20),
+              const SizedBox(width: 8),
+              const Text('Sırala:', style: TextStyle(fontSize: 14)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: DropdownButtonFormField<SortOption>(
+                  value: _currentSort,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: SortOption.none,
+                      child: Text('Varsayılan'),
+                    ),
+                    DropdownMenuItem(
+                      value: SortOption.priceLowToHigh,
+                      child: Text('Fiyat: Düşükten Yükseğe ↑'),
+                    ),
+                    DropdownMenuItem(
+                      value: SortOption.priceHighToLow,
+                      child: Text('Fiyat: Yüksekten Düşüğe ↓'),
+                    ),
+                  ],
+                  onChanged: _onSortChanged,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Results count
+        if (_filteredProducts.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              '${_filteredProducts.length} ürün',
+              style: TextStyle(
+                fontSize: 12,
+                color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              ),
+            ),
+          ),
+
+        const SizedBox(height: 8),
+
+        // Product Grid
         Expanded(
           child: _filteredProducts.isEmpty
               ? const Center(child: Text('Ürün bulunamadı'))
@@ -455,6 +579,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     }
 
                     return GridView.builder(
+                      controller: _scrollController,
                       padding: const EdgeInsets.all(16),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
@@ -698,6 +823,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     _pinController.dispose();
     super.dispose();

@@ -12,18 +12,8 @@ class CostCalculationDialog extends StatefulWidget {
 }
 
 class _CostCalculationDialogState extends State<CostCalculationDialog> {
-  final Set<int> _excludedServiceIds = {};
+  final Set<int> _excludedItemIds = {};
   final currencyFormatter = NumberFormat.currency(locale: 'tr_TR', symbol: '₺');
-
-  // Hizmet itemı olup olmadığını kontrol et
-  bool _isServiceItem(QuoteItem item) {
-    final description = item.description.toLowerCase();
-    return description.contains('işçilik') ||
-        description.contains('montaj') ||
-        description.contains('kurulum') ||
-        description.contains('hizmet') ||
-        description.contains('servis');
-  }
 
   // Alış fiyatını hesapla (margin'den geri hesaplama)
   double _calculatePurchasePrice(QuoteItem item) {
@@ -39,47 +29,48 @@ class _CostCalculationDialogState extends State<CostCalculationDialog> {
     return costWithVat * item.quantity;
   }
 
-  // Toplam ürün maliyetini hesapla (sadece ürünler)
-  double _calculateTotalProductCost() {
+  // Toplam maliyet (tüm itemlar)
+  double _calculateTotalCost() {
     return widget.quote.items
-        .where((item) => !_isServiceItem(item))
         .fold(0.0, (sum, item) => sum + _calculateItemCost(item));
   }
 
-  // Hizmet itemlarının maliyetini hesapla
-  double _calculateServiceCost(QuoteItem item) {
-    // Hizmet itemları için de aynı hesaplamayı yapıyoruz
-    return _calculateItemCost(item);
-  }
-
-  // Seçilen hizmetlerin toplam maliyetini hesapla
-  double _calculateExcludedServicesCost() {
+  // Çıkarılan itemların sadece alış fiyatı (KDV hariç)
+  double _calculateExcludedPurchaseCost() {
     return widget.quote.items
-        .where((item) => _isServiceItem(item) && _excludedServiceIds.contains(item.id))
-        .fold(0.0, (sum, item) => sum + _calculateServiceCost(item));
+        .where((item) => _excludedItemIds.contains(item.id))
+        .fold(0.0, (sum, item) {
+          final purchasePrice = _calculatePurchasePrice(item);
+          return sum + (purchasePrice * item.quantity);
+        });
   }
 
-  // Net maliyeti hesapla
+  // Çıkarılan itemların sadece KDV'si
+  double _calculateExcludedVat() {
+    return widget.quote.items
+        .where((item) => _excludedItemIds.contains(item.id))
+        .fold(0.0, (sum, item) {
+          final purchasePrice = _calculatePurchasePrice(item);
+          final vatAmount = purchasePrice * item.quantity * (item.vatRate / 100);
+          return sum + vatAmount;
+        });
+  }
+
+  // Net maliyet = Toplam - Çıkarılan Alış Fiyatları (KDV dahil değil, çünkü KDV'yi ödüyoruz)
   double _calculateNetCost() {
-    final productCost = _calculateTotalProductCost();
-
-    // Dahil edilen hizmetlerin maliyeti
-    final includedServicesCost = widget.quote.items
-        .where((item) => _isServiceItem(item) && !_excludedServiceIds.contains(item.id))
-        .fold(0.0, (sum, item) => sum + _calculateServiceCost(item));
-
-    return productCost + includedServicesCost;
+    return _calculateTotalCost() - _calculateExcludedPurchaseCost();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serviceItems = widget.quote.items.where(_isServiceItem).toList();
-    final totalProductCost = _calculateTotalProductCost();
+    final totalCost = _calculateTotalCost();
+    final excludedPurchaseCost = _calculateExcludedPurchaseCost();
+    final excludedVat = _calculateExcludedVat();
     final netCost = _calculateNetCost();
 
     return Dialog(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
+        constraints: const BoxConstraints(maxWidth: 800, maxHeight: 700),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -121,165 +112,196 @@ class _CostCalculationDialogState extends State<CostCalculationDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Toplam Ürün Maliyeti
-                    Card(
-                      color: Colors.blue.shade50,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Row(
-                              children: [
-                                Icon(Icons.inventory_2, color: Colors.blue),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Ürün Maliyeti (Alış + KDV):',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              currencyFormatter.format(totalProductCost),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
+                    // Açıklama
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Maliyetten çıkarmak istediğiniz kalemleri seçin:',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue.shade900,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
 
-                    // Hizmet İtemları
-                    if (serviceItems.isNotEmpty) ...[
-                      const Text(
-                        'Hizmet Kalemleri:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    // Tüm İtemlar
+                    const Text(
+                      'Teklif Kalemleri:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const Text(
-                        'Maliyetten çıkarmak istediğiniz hizmetleri seçin:',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Card(
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Item listesi
+                    ...widget.quote.items.asMap().entries.map((entry) {
+                      final index = entry.key + 1;
+                      final item = entry.value;
+                      final isExcluded = _excludedItemIds.contains(item.id);
+                      final purchasePrice = _calculatePurchasePrice(item);
+                      final purchasePriceWithVat = purchasePrice * (1 + item.vatRate / 100);
+                      final itemCost = _calculateItemCost(item);
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        elevation: isExcluded ? 1 : 2,
+                        color: isExcluded ? Colors.red.shade50 : null,
                         child: Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(12),
                           child: Column(
-                            children: serviceItems.map((item) {
-                              final itemCost = _calculateServiceCost(item);
-                              final isExcluded = _excludedServiceIds.contains(item.id);
-
-                              return CheckboxListTile(
-                                title: Text(
-                                  item.description,
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                subtitle: Text(
-                                  '${item.quantity} ${item.unit} × ${currencyFormatter.format(_calculatePurchasePrice(item) * (1 + item.vatRate / 100))}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                secondary: Text(
-                                  currencyFormatter.format(itemCost),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: isExcluded ? Colors.red : Colors.green,
-                                  ),
-                                ),
-                                value: isExcluded,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (value == true) {
-                                      _excludedServiceIds.add(item.id);
-                                    } else {
-                                      _excludedServiceIds.remove(item.id);
-                                    }
-                                  });
-                                },
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-
-                    // Çıkarılan Hizmetler Toplamı
-                    if (_calculateExcludedServicesCost() > 0) ...[
-                      Card(
-                        color: Colors.red.shade50,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Row(
+                              // Checkbox ve Açıklama
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(Icons.remove_circle, color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Çıkarılan Hizmetler:',
-                                    style: TextStyle(fontSize: 14),
+                                  Checkbox(
+                                    value: isExcluded,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        if (value == true) {
+                                          _excludedItemIds.add(item.id);
+                                        } else {
+                                          _excludedItemIds.remove(item.id);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 12),
+                                      child: Text(
+                                        '$index. ${item.description}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: isExcluded ? TextDecoration.lineThrough : null,
+                                          color: isExcluded ? Colors.red.shade700 : null,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                              Text(
-                                '- ${currencyFormatter.format(_calculateExcludedServicesCost())}',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
+                              const SizedBox(height: 8),
+                              const Divider(height: 1),
+                              const SizedBox(height: 8),
+
+                              // Detaylar
+                              Padding(
+                                padding: const EdgeInsets.only(left: 48),
+                                child: Column(
+                                  children: [
+                                    _buildDetailRow(
+                                      'Miktar:',
+                                      '${item.quantity} ${item.unit}',
+                                      Icons.shopping_cart_outlined,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildDetailRow(
+                                      'Satış Fiyatı (Birim):',
+                                      currencyFormatter.format(item.price),
+                                      Icons.sell_outlined,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildDetailRow(
+                                      'Alış Fiyatı (Birim):',
+                                      currencyFormatter.format(purchasePrice),
+                                      Icons.shopping_bag_outlined,
+                                      valueColor: Colors.orange,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildDetailRow(
+                                      'Alış + KDV (Birim):',
+                                      currencyFormatter.format(purchasePriceWithVat),
+                                      Icons.receipt_outlined,
+                                      valueColor: Colors.blue,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildDetailRow(
+                                      'KDV Oranı:',
+                                      '%${item.vatRate.toStringAsFixed(0)}',
+                                      Icons.percent,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildDetailRow(
+                                      'Kar Marjı:',
+                                      '%${item.marginPercentage.toStringAsFixed(0)}',
+                                      Icons.trending_up,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    const Divider(height: 1),
+                                    const SizedBox(height: 8),
+                                    _buildDetailRow(
+                                      'TOPLAM MALİYET:',
+                                      currencyFormatter.format(itemCost),
+                                      Icons.account_balance_wallet,
+                                      isBold: true,
+                                      valueColor: isExcluded ? Colors.red : Colors.green,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                      );
+                    }),
 
-                    // Net Maliyet
+                    const SizedBox(height: 16),
+
+                    // Özet
                     Card(
-                      color: Colors.green.shade50,
+                      color: Colors.grey.shade50,
                       elevation: 4,
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
                           children: [
-                            const Row(
-                              children: [
-                                Icon(Icons.account_balance_wallet, color: Colors.green, size: 28),
-                                SizedBox(width: 12),
-                                Text(
-                                  'NET MALİYET:',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                            _buildSummaryRow(
+                              'Toplam Maliyet:',
+                              currencyFormatter.format(totalCost),
+                              Colors.blue,
                             ),
-                            Text(
-                              currencyFormatter.format(netCost),
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                            if (excludedPurchaseCost > 0) ...[
+                              const SizedBox(height: 8),
+                              _buildSummaryRow(
+                                'Çıkarılan Kalemler (Alış):',
+                                '- ${currencyFormatter.format(excludedPurchaseCost)}',
+                                Colors.red,
                               ),
+                              const SizedBox(height: 8),
+                              _buildSummaryRow(
+                                'Çıkarılan Kalemlerin KDV\'si:',
+                                '+ ${currencyFormatter.format(excludedVat)}',
+                                Colors.orange,
+                              ),
+                              const SizedBox(height: 8),
+                              const Divider(),
+                            ],
+                            const SizedBox(height: 8),
+                            _buildSummaryRow(
+                              'NET MALİYET:',
+                              currencyFormatter.format(netCost),
+                              Colors.green,
+                              isBold: true,
+                              fontSize: 18,
                             ),
                           ],
                         ),
@@ -287,7 +309,7 @@ class _CostCalculationDialogState extends State<CostCalculationDialog> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Açıklama
+                    // Bilgilendirme
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -299,7 +321,7 @@ class _CostCalculationDialogState extends State<CostCalculationDialog> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.info_outline, size: 16, color: Colors.grey.shade700),
+                              Icon(Icons.lightbulb_outline, size: 16, color: Colors.grey.shade700),
                               const SizedBox(width: 8),
                               Text(
                                 'Bilgilendirme:',
@@ -313,8 +335,10 @@ class _CostCalculationDialogState extends State<CostCalculationDialog> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '• Maliyet, ürünlerin alış fiyatı + KDV toplamından hesaplanır.\n'
-                            '• Alış fiyatı, satış fiyatından kar marjı düşülerek bulunur.\n'
+                            '• Alış fiyatı, satış fiyatından kar marjı düşülerek hesaplanır.\n'
+                            '• Maliyet = Alış fiyatı × (1 + KDV%) × Miktar\n'
+                            '• Seçtiğiniz kalemlerin alış fiyatları maliyetten çıkar.\n'
+                            '• Ancak seçilen kalemlerin KDV\'si maliyete eklenir (devlete ödendiği için).\n'
                             '• Bu hesaplama sadece bilgilendirme amaçlıdır ve teklifi etkilemez.',
                             style: TextStyle(
                               fontSize: 11,
@@ -349,6 +373,68 @@ class _CostCalculationDialogState extends State<CostCalculationDialog> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailRow(
+    String label,
+    String value,
+    IconData icon, {
+    bool isBold = false,
+    Color? valueColor,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.grey.shade600),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: Colors.grey.shade700,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
+            color: valueColor ?? Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryRow(
+    String label,
+    String value,
+    Color color, {
+    bool isBold = false,
+    double fontSize = 14,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }
