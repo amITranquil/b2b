@@ -375,11 +375,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
               tooltip: 'Detayları Göster',
               onPressed: _showPinDialog,
             ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Yenile',
-            onPressed: _loadProducts,
-          ),
         ],
       ),
       body: _buildBody(isDarkMode),
