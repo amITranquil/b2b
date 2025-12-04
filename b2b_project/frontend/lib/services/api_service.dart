@@ -4,26 +4,50 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 import '../models/quote.dart';
 import '../config/api_config.dart';
+import 'cache_service.dart';
 
 class ApiService {
   final String baseUrl = ApiConfig.apiUrl;
   final http.Client _client = http.Client();
+  final CacheService _cacheService = CacheService();
 
-  Future<List<Product>> getProducts() async {
+  Future<List<Product>> getProducts({bool forceRefresh = false}) async {
     try {
-      // Union endpoint - hem API ürünleri hem manuel ürünleri getirir
+      // Cache'den oku (force refresh değilse)
+      if (!forceRefresh) {
+        final cachedProducts = await _cacheService.getCachedProducts();
+        if (cachedProducts != null && cachedProducts.isNotEmpty) {
+          log("Returning ${cachedProducts.length} products from cache");
+          return cachedProducts;
+        }
+      }
+
+      // API'den çek
+      log("Fetching products from API...");
       final response = await _client.get(Uri.parse('$baseUrl/products/all'));
       log("Products API response status: ${response.statusCode}");
 
       if (response.statusCode == 200) {
         List<dynamic> jsonList = json.decode(response.body);
-        return jsonList.map((json) => Product.fromJson(json)).toList();
+        final products = jsonList.map((json) => Product.fromJson(json)).toList();
+
+        // Cache'e kaydet
+        await _cacheService.cacheProducts(products);
+        log("Cached ${products.length} products");
+
+        return products;
       } else {
         log("Error loading products: status ${response.statusCode}");
         throw Exception('Ürünler yüklenemedi');
       }
     } catch (e) {
       log("Exception in getProducts: ${e.runtimeType}");
+      // Hata durumunda cache'den dene
+      final cachedProducts = await _cacheService.getCachedProducts();
+      if (cachedProducts != null && cachedProducts.isNotEmpty) {
+        log("Returning ${cachedProducts.length} products from cache (fallback)");
+        return cachedProducts;
+      }
       throw Exception('Sunucuya bağlanılamadı');
     }
   }

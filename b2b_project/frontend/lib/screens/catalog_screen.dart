@@ -43,19 +43,28 @@ class _CatalogScreenState extends State<CatalogScreen> {
     });
   }
 
-  Future<void> _loadProducts() async {
+  Future<void> _loadProducts({bool forceRefresh = false}) async {
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
-      final products = await _apiService.getProducts();
+      final products = await _apiService.getProducts(forceRefresh: forceRefresh);
       setState(() {
         _products = products.where((p) => !p.isDeleted).toList();
         _filteredProducts = _products;
         _isLoading = false;
       });
+
+      if (forceRefresh && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ürünler güncellendi'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     } catch (e) {
       setState(() {
         _error = 'Ürünler yüklenemedi: $e';
@@ -328,6 +337,11 @@ class _CatalogScreenState extends State<CatalogScreen> {
       appBar: AppBar(
         title: const Text('URLA TEKNİK - Ürün Kataloğu'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Yenile',
+            onPressed: _isLoading ? null : () => _loadProducts(forceRefresh: true),
+          ),
           if (_isAuthenticated)
             IconButton(
               icon: const Icon(Icons.description),

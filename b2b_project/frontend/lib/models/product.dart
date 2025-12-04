@@ -71,4 +71,26 @@ class Product {
 
   double get salePriceExcludingVat => vatRate > 0 ? myPrice / (1 + vatRate / 100) : myPrice;
   double get salePriceIncludingVat => myPrice;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'productCode': productCode,
+      'name': name,
+      'listPrice': listPrice,
+      'buyPriceExcludingVat': buyPriceExcludingVat,
+      'buyPriceIncludingVat': buyPriceIncludingVat,
+      'myPrice': myPrice,
+      'discount1': discount1,
+      'discount2': discount2,
+      'discount3': discount3,
+      'vatRate': vatRate,
+      'imageUrl': imageUrl,
+      'localImagePath': localImagePath,
+      'marginPercentage': marginPercentage,
+      'lastUpdated': lastUpdated.toIso8601String(),
+      'isDeleted': isDeleted,
+      'deletedAt': deletedAt?.toIso8601String(),
+    };
+  }
 }
