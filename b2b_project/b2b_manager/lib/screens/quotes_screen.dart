@@ -123,13 +123,21 @@ class QuotesScreenState extends State<QuotesScreen> {
       itemCount: _quotes.length,
       itemBuilder: (context, index) {
         final quote = _quotes[index];
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          color: quote.isDraft ? Colors.orange.shade50 : null,
+          color: quote.isDraft
+              ? (isDarkMode
+                  ? Colors.orange.shade900.withValues(alpha: 0.2)  // Dark mode: soft dark orange
+                  : Colors.orange.shade50)  // Light mode: soft light orange
+              : null,
           child: ListTile(
             leading: quote.isDraft
-                ? const Icon(Icons.edit_note, color: Colors.orange)
-                : const Icon(Icons.description, color: Colors.blue),
+                ? Icon(Icons.edit_note,
+                    color: isDarkMode ? Colors.orange.shade300 : Colors.orange.shade700)
+                : Icon(Icons.description,
+                    color: isDarkMode ? Colors.blue.shade300 : Colors.blue.shade700),
             title: Row(
               children: [
                 Expanded(child: Text(quote.customerName)),
@@ -137,7 +145,7 @@ class QuotesScreenState extends State<QuotesScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.orange,
+                      color: isDarkMode ? Colors.orange.shade700 : Colors.orange.shade600,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(

@@ -7,7 +7,18 @@ import 'quotes_screen.dart';
 import 'manual_product_form_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key});
+  final VoidCallback onToggleTheme;
+  final bool isDarkMode;
+  final int initialTabIndex;
+  final bool showOnlyManual;
+
+  const ProductsScreen({
+    super.key,
+    required this.onToggleTheme,
+    required this.isDarkMode,
+    this.initialTabIndex = 0,
+    this.showOnlyManual = false,
+  });
 
   @override
   ProductsScreenState createState() => ProductsScreenState();
@@ -27,7 +38,7 @@ class ProductsScreenState extends State<ProductsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.initialTabIndex);
     _loadProducts();
   }
 
@@ -71,8 +82,13 @@ class ProductsScreenState extends State<ProductsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('B2B Yönetimi'),
-        bottom: TabBar(
+        leading: IconButton(
+          icon: const Icon(Icons.home),
+          tooltip: 'Ana Sayfa',
+          onPressed: () => Navigator.pushNamed(context, '/'),
+        ),
+        title: Text(widget.showOnlyManual ? 'Manuel Ürünler' : 'B2B Yönetimi'),
+        bottom: widget.showOnlyManual ? null : TabBar(
           controller: _tabController,
           tabs: const [
             Tab(text: 'Ürün Listesi'),
@@ -80,6 +96,12 @@ class ProductsScreenState extends State<ProductsScreen>
           ],
         ),
         actions: [
+          // Tema Toggle butonu
+          IconButton(
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            tooltip: widget.isDarkMode ? 'Açık Tema' : 'Koyu Tema',
+            onPressed: widget.onToggleTheme,
+          ),
           // Manuel Ürün Ekle butonu
           IconButton(
             icon: const Icon(Icons.add_box),
@@ -124,27 +146,43 @@ class ProductsScreenState extends State<ProductsScreen>
           ),
         ],
       ),
-      body: MediaQuery.removePadding(
-        context: context,
-        removeLeft: true,
-        removeRight: true,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            Container(
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              child: _buildProductsList(),
+      body: widget.showOnlyManual
+          ? MediaQuery.removePadding(
+              context: context,
+              removeLeft: true,
+              removeRight: true,
+              child: Container(
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                child: _buildProductsList(),
+              ),
+            )
+          : MediaQuery.removePadding(
+              context: context,
+              removeLeft: true,
+              removeRight: true,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  Container(
+                    margin: EdgeInsets.zero,
+                    padding: EdgeInsets.zero,
+                    child: _buildProductsList(),
+                  ),
+                  const QuotesScreen(),
+                ],
+              ),
             ),
-            const QuotesScreen(),
-          ],
-        ),
-      ),
     );
   }
 
   Widget _buildProductsList() {
-    final filteredProducts = _products.where((product) {
+    // Manuel ürün filtresi uygula
+    var productsToShow = widget.showOnlyManual
+        ? _products.where((p) => p.isManual).toList()
+        : _products;
+
+    final filteredProducts = productsToShow.where((product) {
       final search = _searchQuery.toLowerCase();
       return product.name.toLowerCase().contains(search) ||
           product.productCode.toLowerCase().contains(search);
