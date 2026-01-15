@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'screens/home_screen.dart';
 import 'screens/catalog_screen.dart';
+import 'screens/quotes_screen.dart';
 import 'services/theme_service.dart';
 import 'widgets/skeleton_loader.dart';
 
@@ -44,7 +46,7 @@ class _MyAppState extends State<MyApp> {
       valueListenable: _themeService.isDarkMode,
       builder: (context, isDarkMode, child) {
         return MaterialApp(
-          title: 'URLA TEKNİK - Ürün Kataloğu',
+          title: 'URLA TEKNİK - B2B Yönetim Sistemi',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -62,11 +64,14 @@ class _MyAppState extends State<MyApp> {
             Locale('en', 'US'),
           ],
           locale: const Locale('tr', 'TR'),
-          home: _isInitialized
-              ? const CatalogScreen()
-              : const Scaffold(
-                  body: SkeletonLoader(itemCount: 30),
-                ),
+          initialRoute: '/',
+          routes: {
+            '/': (context) => _isInitialized
+                ? const HomeScreen()
+                : const Scaffold(body: SkeletonLoader(itemCount: 30)),
+            '/catalog': (context) => const CatalogScreen(),
+            '/quotes': (context) => const QuotesScreen(),
+          },
         );
       },
     );

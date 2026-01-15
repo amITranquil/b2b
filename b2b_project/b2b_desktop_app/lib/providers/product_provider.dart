@@ -4,7 +4,7 @@ import '../services/api_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
-  
+
   List<Product> _products = [];
   List<Product> _filteredProducts = [];
   bool _isLoading = false;
@@ -18,6 +18,40 @@ class ProductProvider extends ChangeNotifier {
   String get searchQuery => _searchQuery;
   DateTime? get lastUpdated => _lastUpdated;
   bool get hasProducts => _products.isNotEmpty;
+
+  // Constructor'da backend URL'i yükle
+  ProductProvider() {
+    _initializeBackend();
+  }
+
+  Future<void> _initializeBackend() async {
+    await _apiService.loadSavedBackendUrl();
+  }
+
+  // Backend'i değiştir
+  Future<void> changeBackend(String url) async {
+    await _apiService.setBackendUrl(url);
+
+    // Ürünleri temizle (yeni backend'den yüklenecek)
+    _products = [];
+    _filteredProducts = [];
+    _lastUpdated = null;
+
+    notifyListeners();
+
+    if (kDebugMode) {
+      print('✅ Backend değiştirildi: $url');
+    }
+  }
+
+  // Mevcut backend bilgilerini al
+  String getCurrentBackend() {
+    return _apiService.getCurrentBackendUrl();
+  }
+
+  String getBackendType() {
+    return _apiService.getBackendType();
+  }
 
   // Tüm ürünleri yükle
   Future<void> loadProducts() async {
@@ -167,6 +201,82 @@ class ProductProvider extends ChangeNotifier {
     } catch (e) {
       if (kDebugMode) {
         print('Stop scraping error: $e');
+      }
+      rethrow;
+    }
+  }
+
+  // Manuel backup oluştur
+  Future<Map<String, dynamic>> createBackup() async {
+    try {
+      if (kDebugMode) {
+        print('Creating backup...');
+      }
+      final result = await _apiService.createBackup();
+      if (kDebugMode) {
+        print('Backup created: ${result['backupFile']}');
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Backup creation error: $e');
+      }
+      rethrow;
+    }
+  }
+
+  // Backup listesini getir
+  Future<Map<String, dynamic>> listBackups() async {
+    try {
+      if (kDebugMode) {
+        print('Loading backup list...');
+      }
+      final result = await _apiService.listBackups();
+      if (kDebugMode) {
+        print('Found ${result['count']} backups');
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        print('List backups error: $e');
+      }
+      rethrow;
+    }
+  }
+
+  // Eski backup'ları temizle
+  Future<Map<String, dynamic>> cleanupBackups({int? retentionDays}) async {
+    try {
+      if (kDebugMode) {
+        print('Cleaning up old backups...');
+      }
+      final result = await _apiService.cleanupBackups(retentionDays: retentionDays);
+      if (kDebugMode) {
+        print('Cleaned ${result['deletedCount']} old backups');
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Cleanup backups error: $e');
+      }
+      rethrow;
+    }
+  }
+
+  // Backup dosyasını indir
+  Future<List<int>> downloadBackup(String fileName) async {
+    try {
+      if (kDebugMode) {
+        print('Downloading backup: $fileName');
+      }
+      final bytes = await _apiService.downloadBackup(fileName);
+      if (kDebugMode) {
+        print('Downloaded ${bytes.length} bytes');
+      }
+      return bytes;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Download backup error: $e');
       }
       rethrow;
     }

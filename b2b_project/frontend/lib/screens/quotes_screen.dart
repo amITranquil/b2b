@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../models/quote.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import '../services/theme_service.dart';
 import 'quote_detail_screen.dart';
 
@@ -15,6 +16,7 @@ class QuotesScreen extends StatefulWidget {
 
 class _QuotesScreenState extends State<QuotesScreen> {
   final ApiService _apiService = ApiService();
+  final AuthService _authService = AuthService();
   final ThemeService _themeService = ThemeService();
   final TextEditingController _searchController = TextEditingController();
 
@@ -27,7 +29,20 @@ class _QuotesScreenState extends State<QuotesScreen> {
   @override
   void initState() {
     super.initState();
+    _checkAuthAndRedirect();
     _loadQuotes();
+  }
+
+  Future<void> _checkAuthAndRedirect() async {
+    final isAuth = await _authService.isAuthenticated();
+    if (!isAuth && mounted) {
+      // Authenticated değilse ana sayfaya yönlendir
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, '/');
+        }
+      });
+    }
   }
 
   @override
@@ -130,6 +145,11 @@ class _QuotesScreenState extends State<QuotesScreen> {
       appBar: AppBar(
         title: const Text('Teklifler'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            tooltip: 'Ana Sayfa',
+            onPressed: () => Navigator.pushNamed(context, '/'),
+          ),
           IconButton(
             icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
             tooltip: isDarkMode ? 'Açık Tema' : 'Koyu Tema',

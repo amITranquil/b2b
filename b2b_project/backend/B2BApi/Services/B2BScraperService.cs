@@ -585,25 +585,25 @@ namespace B2BApi.Services
                                                 var delNode = priceCell.SelectSingleNode(".//del");
                                                 if (delNode != null)
                                                 {
-                                                    var price = delNode.InnerText.Replace("₺", "").Trim();
+                                                    var price = delNode.InnerText.Replace("₺", "").Replace("EUR", "").Replace("USD", "").Trim();
                                                     price = ParseTurkishDecimal(price);
-                                                    decimal.TryParse(price, out listPrice);
+                                                    decimal.TryParse(price, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out listPrice);
                                                     _logger.LogInformation($"List price from <del>: {delNode.InnerText} -> parsed: {price} -> {listPrice}");
                                                 }
                                                 else
                                                 {
-                                                    var price = priceText.Replace("₺", "").Trim();
+                                                    var price = priceText.Replace("₺", "").Replace("EUR", "").Replace("USD", "").Trim();
                                                     price = ParseTurkishDecimal(price);
-                                                    decimal.TryParse(price, out listPrice);
+                                                    decimal.TryParse(price, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out listPrice);
                                                     _logger.LogInformation($"List price from text: {priceText} -> parsed: {price} -> {listPrice}");
                                                 }
                                             }
                                             else if (label.Contains("Size Özel") || label.Contains("Özel") || label.Contains("KDV Hariç"))
                                             {
                                                 // KDV Hariç fiyat
-                                                var price = priceText.Replace("₺", "").Trim();
+                                                var price = priceText.Replace("₺", "").Replace("EUR", "").Replace("USD", "").Trim();
                                                 price = ParseTurkishDecimal(price);
-                                                decimal.TryParse(price, out buyPriceExcludingVat);
+                                                decimal.TryParse(price, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out buyPriceExcludingVat);
                                                 _logger.LogInformation($"Buy price excluding VAT: {priceText} -> parsed: {price} -> {buyPriceExcludingVat}");
                                             }
                                             else if (label.Contains("KDV Dahil") || string.IsNullOrEmpty(label))
@@ -612,16 +612,16 @@ namespace B2BApi.Services
                                                 var strongNode = priceCell.SelectSingleNode(".//strong");
                                                 if (strongNode != null)
                                                 {
-                                                    var price = strongNode.InnerText.Replace("₺", "").Trim();
+                                                    var price = strongNode.InnerText.Replace("₺", "").Replace("EUR", "").Replace("USD", "").Trim();
                                                     price = ParseTurkishDecimal(price);
-                                                    decimal.TryParse(price, out buyPriceIncludingVat);
+                                                    decimal.TryParse(price, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out buyPriceIncludingVat);
                                                     _logger.LogInformation($"Buy price including VAT from <strong>: {strongNode.InnerText} -> parsed: {price} -> {buyPriceIncludingVat}");
                                                 }
                                                 else
                                                 {
-                                                    var price = priceText.Replace("₺", "").Trim();
+                                                    var price = priceText.Replace("₺", "").Replace("EUR", "").Replace("USD", "").Trim();
                                                     price = ParseTurkishDecimal(price);
-                                                    decimal.TryParse(price, out buyPriceIncludingVat);
+                                                    decimal.TryParse(price, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out buyPriceIncludingVat);
                                                     _logger.LogInformation($"Buy price including VAT from text: {priceText} -> parsed: {price} -> {buyPriceIncludingVat}");
                                                 }
                                             }

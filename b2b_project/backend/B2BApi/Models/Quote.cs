@@ -5,6 +5,13 @@ namespace B2BApi.Models
 {
     public class Quote
     {
+        // Helper method to get Istanbul time (UTC+3)
+        private static DateTime GetIstanbulTime()
+        {
+            TimeZoneInfo istanbulTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Istanbul");
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, istanbulTimeZone);
+        }
+
         public int Id { get; set; }
 
         [Required]
@@ -27,7 +34,7 @@ namespace B2BApi.Models
         public string? ExtraNote { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = GetIstanbulTime();
 
         public DateTime? ModifiedAt { get; set; }
 

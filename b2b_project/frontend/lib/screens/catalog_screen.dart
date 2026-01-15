@@ -7,7 +7,6 @@ import '../services/auth_service.dart';
 import '../services/theme_service.dart';
 import '../config/api_config.dart';
 import '../widgets/skeleton_loader.dart';
-import 'quotes_screen.dart';
 
 enum SortOption {
   none,
@@ -27,7 +26,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
   final AuthService _authService = AuthService();
   final ThemeService _themeService = ThemeService();
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _pinController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   List<Product> _products = [];
@@ -43,15 +41,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
   void initState() {
     super.initState();
     _themeService.loadThemePreference();
-    _checkAuth();
+    _checkAuthAndRedirect();
     _loadProducts();
   }
 
-  Future<void> _checkAuth() async {
+  Future<void> _checkAuthAndRedirect() async {
     final isAuth = await _authService.isAuthenticated();
-    setState(() {
-      _isAuthenticated = isAuth;
-    });
+    if (mounted) {
+      setState(() {
+        _isAuthenticated = isAuth;
+      });
+
+      // Direkt link ile erişim engelleme (opsiyonel - home'dan gelenleri de engellemez)
+      // Sadece authentication durumunu set ediyoruz
+    }
   }
 
   Future<void> _loadProducts({bool forceRefresh = false}) async {
@@ -170,226 +173,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
     _scrollToTop();
   }
 
-  void _showPinDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('🔒 Detaylı Bilgi'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _pinController,
-              decoration: const InputDecoration(
-                labelText: 'PIN',
-                hintText: '4 haneli PIN',
-              ),
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              obscureText: true,
-              autofocus: true,
-              onSubmitted: (_) => _verifyPin(),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('İptal'),
-          ),
-          ElevatedButton(
-            onPressed: _verifyPin,
-            child: const Text('Doğrula'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _verifyPin() async {
-    final pin = _pinController.text;
-
-    // PIN doğrulama sırasında loading göster
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PIN doğrulanıyor...'), duration: Duration(seconds: 1)),
-      );
-    }
-
-    // JWT login kullan
-    final result = await _authService.login(pin);
-
-    if (result != null && result['success'] == true) {
-      setState(() {
-        _isAuthenticated = true;
-      });
-      _pinController.clear();
-      if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('✓ Giriş başarılı'), backgroundColor: Colors.green),
-        );
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('✗ Hatalı PIN'), backgroundColor: Colors.red),
-        );
-      }
-    }
-  }
-
-  void _logout() async {
-    await _authService.logout();
-    setState(() {
-      _isAuthenticated = false;
-    });
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Oturum kapatıldı')),
-      );
-    }
-  }
-
-  void _showChangePinDialog() {
-    final currentPinController = TextEditingController();
-    final newPinController = TextEditingController();
-    final confirmPinController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('🔐 PIN Değiştir'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: currentPinController,
-              decoration: const InputDecoration(
-                labelText: 'Mevcut PIN',
-                hintText: '4 haneli PIN',
-              ),
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              obscureText: true,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: newPinController,
-              decoration: const InputDecoration(
-                labelText: 'Yeni PIN',
-                hintText: '4 haneli PIN',
-              ),
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              obscureText: true,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: confirmPinController,
-              decoration: const InputDecoration(
-                labelText: 'Yeni PIN (Tekrar)',
-                hintText: '4 haneli PIN',
-              ),
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              obscureText: true,
-              autofocus: false,
-              onSubmitted: (_) => _changePin(
-                currentPinController.text,
-                newPinController.text,
-                confirmPinController.text,
-                context,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('İptal'),
-          ),
-          ElevatedButton(
-            onPressed: () => _changePin(
-              currentPinController.text,
-              newPinController.text,
-              confirmPinController.text,
-              context,
-            ),
-            child: const Text('Değiştir'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _changePin(
-    String currentPin,
-    String newPin,
-    String confirmPin,
-    BuildContext dialogContext,
-  ) async {
-    // Validasyon
-    if (currentPin.isEmpty || newPin.isEmpty || confirmPin.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tüm alanları doldurun'), backgroundColor: Colors.orange),
-      );
-      return;
-    }
-
-    if (newPin.length < 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PIN en az 4 karakter olmalıdır'), backgroundColor: Colors.orange),
-      );
-      return;
-    }
-
-    if (newPin != confirmPin) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Yeni PIN\'ler eşleşmiyor'), backgroundColor: Colors.orange),
-      );
-      return;
-    }
-
-    if (currentPin == newPin) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Yeni PIN eskisiyle aynı olamaz'), backgroundColor: Colors.orange),
-      );
-      return;
-    }
-
-    // Loading göster
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PIN değiştiriliyor...'), duration: Duration(seconds: 1)),
-      );
-    }
-
-    // PIN değiştir
-    final result = await _authService.changePin(currentPin, newPin);
-
-    // Dialog'u kapat
-    if (dialogContext.mounted) {
-      Navigator.pop(dialogContext);
-    }
-
-    // Sonucu göster
-    if (mounted) {
-      if (result != null && result['success'] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('✓ PIN başarıyla değiştirildi'), backgroundColor: Colors.green),
-        );
-        // Oturumu kapat - yeni PIN ile giriş yapması için
-        _logout();
-      } else {
-        final message = result?['message'] ?? 'PIN değiştirilemedi';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('✗ $message'), backgroundColor: Colors.red),
-        );
-      }
-    }
-  }
-
   String _formatCurrency(double value) {
     final formatter = NumberFormat.currency(locale: 'tr_TR', symbol: '₺', decimalDigits: 2);
     return formatter.format(value);
@@ -405,43 +188,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
         title: const Text('URLA TEKNİK - Ürün Kataloğu'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.home),
+            tooltip: 'Ana Sayfa',
+            onPressed: () => Navigator.pushNamed(context, '/'),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: 'Yenile',
             onPressed: _isLoading ? null : () => _loadProducts(forceRefresh: true),
           ),
-          if (_isAuthenticated)
-            IconButton(
-              icon: const Icon(Icons.description),
-              tooltip: 'Teklifler',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const QuotesScreen()),
-                );
-              },
-            ),
           IconButton(
             icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
             tooltip: isDarkMode ? 'Açık Tema' : 'Koyu Tema',
             onPressed: _themeService.toggleTheme,
           ),
-          if (_isAuthenticated) ...[
-            IconButton(
-              icon: const Icon(Icons.vpn_key),
-              tooltip: 'PIN Değiştir',
-              onPressed: _showChangePinDialog,
-            ),
-            IconButton(
-              icon: const Icon(Icons.lock_open),
-              tooltip: 'Oturumu Kapat',
-              onPressed: _logout,
-            ),
-          ] else
-            IconButton(
-              icon: const Icon(Icons.lock),
-              tooltip: 'Detayları Göster',
-              onPressed: _showPinDialog,
-            ),
         ],
       ),
       body: _buildBody(isDarkMode),
@@ -677,6 +437,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   ),
                   const Spacer(),
                   if (!_isAuthenticated) ...[
+                    // PIN girilmemiş - Sadece Satış (KDV Dahil) göster
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
@@ -706,6 +467,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                       ),
                     ),
                   ] else ...[
+                    // PIN girilmiş - Tüm fiyatları göster
                     _buildDetailRow('Liste Fiyatı', product.listPrice, isDarkMode),
                     const SizedBox(height: 4),
                     _buildDetailRow('Alış (KDV Hariç)', product.buyPriceExcludingVat, isDarkMode),
@@ -825,7 +587,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
   void dispose() {
     _scrollController.dispose();
     _searchController.dispose();
-    _pinController.dispose();
     super.dispose();
   }
 }

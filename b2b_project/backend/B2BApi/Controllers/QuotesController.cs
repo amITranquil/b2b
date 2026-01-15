@@ -18,6 +18,13 @@ namespace B2BApi.Controllers
             _logger = logger;
         }
 
+        // Helper method to get Istanbul time (UTC+3)
+        private static DateTime GetIstanbulTime()
+        {
+            TimeZoneInfo istanbulTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Istanbul");
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, istanbulTimeZone);
+        }
+
         // GET: api/quotes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Quote>>> GetQuotes()
@@ -81,8 +88,8 @@ namespace B2BApi.Controllers
                     item.QuoteId = 0;
                 }
 
-                // Set creation time
-                quote.CreatedAt = DateTime.UtcNow;
+                // Set creation time (Istanbul timezone)
+                quote.CreatedAt = GetIstanbulTime();
                 quote.ModifiedAt = null;
 
                 // Calculate totals
@@ -135,7 +142,7 @@ namespace B2BApi.Controllers
                 existingQuote.Note = quote.Note;
                 existingQuote.ExtraNote = quote.ExtraNote;
                 existingQuote.IsDraft = quote.IsDraft;
-                existingQuote.ModifiedAt = DateTime.UtcNow;
+                existingQuote.ModifiedAt = GetIstanbulTime();
 
                 // Remove old items
                 _context.QuoteItems.RemoveRange(existingQuote.Items);
@@ -240,7 +247,7 @@ namespace B2BApi.Controllers
 
                 // Toggle draft status
                 quote.IsDraft = !quote.IsDraft;
-                quote.ModifiedAt = DateTime.UtcNow;
+                quote.ModifiedAt = GetIstanbulTime();
 
                 await _context.SaveChangesAsync();
 

@@ -1,14 +1,29 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://b2bapi.urlateknik.com:5000/api';
-  late final Dio _dio;
+  static const String remoteUrl = 'https://b2bapi.urlateknik.com:5000/api';
+  static const String localUrl = 'http://localhost:5000/api';
 
-  ApiService() {
+  static ApiService? _instance;
+  late Dio _dio;
+  String _currentBaseUrl = remoteUrl; // Default: uzak
+
+  // Singleton pattern
+  factory ApiService() {
+    _instance ??= ApiService._internal();
+    return _instance!;
+  }
+
+  ApiService._internal() {
+    _initializeDio();
+  }
+
+  void _initializeDio() {
     _dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: _currentBaseUrl,
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(hours: 2), // Büyük pagination scraping için 2 saat timeout
       sendTimeout: const Duration(hours: 2),
@@ -27,6 +42,58 @@ class ApiService {
         // ignore: avoid_print
         logPrint: (obj) => print('[API] $obj'),
       ));
+    }
+  }
+
+  // Base URL'i değiştir ve Dio'yu yeniden initialize et
+  Future<void> setBackendUrl(String url) async {
+    _currentBaseUrl = url;
+    _initializeDio();
+
+    // Tercihi kaydet
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('backend_url', url);
+
+    if (kDebugMode) {
+      print('🔄 Backend URL değiştirildi: $url');
+    }
+  }
+
+  // Kaydedilmiş backend URL'i yükle
+  Future<void> loadSavedBackendUrl() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedUrl = prefs.getString('backend_url');
+
+      if (savedUrl != null) {
+        _currentBaseUrl = savedUrl;
+        _initializeDio();
+        if (kDebugMode) {
+          print('✅ Kaydedilmiş backend yüklendi: $savedUrl');
+        }
+      } else {
+        if (kDebugMode) {
+          print('ℹ️ Kaydedilmiş backend yok, varsayılan kullanılıyor: $remoteUrl');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ Backend URL yükleme hatası: $e');
+      }
+    }
+  }
+
+  // Mevcut backend URL'i al
+  String getCurrentBackendUrl() => _currentBaseUrl;
+
+  // Backend tipini al (remote/local)
+  String getBackendType() {
+    if (_currentBaseUrl == remoteUrl) {
+      return 'remote';
+    } else if (_currentBaseUrl == localUrl) {
+      return 'local';
+    } else {
+      return 'custom';
     }
   }
 
@@ -218,6 +285,78 @@ class ApiService {
       throw Exception('Network error: ${e.message}');
     } catch (e) {
       throw Exception('Failed to bulk soft delete: $e');
+    }
+  }
+
+  // Manuel backup oluştur
+  Future<Map<String, dynamic>> createBackup() async {
+    try {
+      final response = await _dio.post('/backup/create');
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to create backup: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Network error: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to create backup: $e');
+    }
+  }
+
+  // Backup listesini getir
+  Future<Map<String, dynamic>> listBackups() async {
+    try {
+      final response = await _dio.get('/backup/list');
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to list backups: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Network error: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to list backups: $e');
+    }
+  }
+
+  // Eski backup'ları temizle
+  Future<Map<String, dynamic>> cleanupBackups({int? retentionDays}) async {
+    try {
+      final queryParams = retentionDays != null ? {'retentionDays': retentionDays} : null;
+      final response = await _dio.post('/backup/cleanup', queryParameters: queryParams);
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to cleanup backups: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Network error: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to cleanup backups: $e');
+    }
+  }
+
+  // Backup dosyasını indir
+  Future<List<int>> downloadBackup(String fileName) async {
+    try {
+      final response = await _dio.get(
+        '/backup/download/${Uri.encodeComponent(fileName)}',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as List<int>;
+      } else {
+        throw Exception('Failed to download backup: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Network error: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to download backup: $e');
     }
   }
 
