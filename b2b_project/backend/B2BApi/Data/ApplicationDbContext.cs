@@ -14,6 +14,8 @@ namespace B2BApi.Data
         public DbSet<Quote> Quotes { get; set; }
         public DbSet<QuoteItem> QuoteItems { get; set; }
         public DbSet<AppSetting> AppSettings { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+        public DbSet<SaleItem> SaleItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -93,6 +95,30 @@ namespace B2BApi.Data
                         LastUpdated = new DateTime(2024, 11, 10, 12, 0, 0, DateTimeKind.Utc)
                     }
                 );
+            });
+
+            modelBuilder.Entity<Sale>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Subtotal).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.CardCommission).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Total).HasColumnType("decimal(18,2)");
+
+                // One-to-many relationship
+                entity.HasMany(e => e.Items)
+                      .WithOne(e => e.Sale)
+                      .HasForeignKey(e => e.SaleId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SaleItem>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Quantity).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.VatRate).HasColumnType("decimal(18,2)");
             });
 
             base.OnModelCreating(modelBuilder);
