@@ -86,7 +86,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     try {
       // Create sale object with completed status
       final sale = Sale(
-        id: widget.pendingSale?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id: widget.pendingSale?.id, // Backend varsa ID'yi kullan, yoksa null (backend oluşturacak)
         createdAt: widget.pendingSale?.createdAt ?? DateTime.now(),
         items: widget.cartItems.map((cartItem) => SaleItem(
           productCode: cartItem.product.productCode,
@@ -105,9 +105,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       // Save to backend
       try {
-        if (widget.pendingSale != null) {
+        if (widget.pendingSale != null && widget.pendingSale!.id != null) {
           // Update pending sale to completed
-          await _apiService.updateSale(widget.pendingSale!.id, sale);
+          await _apiService.updateSale(widget.pendingSale!.id!, sale);
         } else {
           // Create new sale
           await _apiService.createSale(sale);
@@ -217,7 +217,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     try {
       // Create sale object with pending status
       final sale = Sale(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: null, // Yeni satış, backend ID oluşturacak
         createdAt: DateTime.now(),
         items: widget.cartItems.map((cartItem) => SaleItem(
           productCode: cartItem.product.productCode,

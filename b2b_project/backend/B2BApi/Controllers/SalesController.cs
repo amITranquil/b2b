@@ -106,6 +106,12 @@ public class SalesController : ControllerBase
                 return BadRequest(new { message = "Invalid status. Must be 'pending', 'completed', or 'cancelled'" });
             }
 
+            // Items'ların SaleId'sini temizle - EF otomatik atayacak
+            foreach (var item in sale.Items)
+            {
+                item.SaleId = 0; // EF tarafından otomatik set edilecek
+            }
+
             _context.Sales.Add(sale);
             await _context.SaveChangesAsync();
 

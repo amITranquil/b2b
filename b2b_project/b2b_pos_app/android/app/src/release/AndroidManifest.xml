@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Internet permission for production release -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Microphone permission for voice search -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+</manifest>

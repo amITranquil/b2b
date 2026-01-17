@@ -49,5 +49,12 @@
 	<string>Ürün araması yapmak için mikrofonunuza erişmek istiyoruz.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Ürün araması yapmak için mikrofonunuza erişmek istiyoruz.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

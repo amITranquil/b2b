@@ -87,6 +87,16 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
   }
 
   Future<void> _deletePendingSale(Sale sale) async {
+    if (sale.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Hata: Satış ID bulunamadı'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -112,7 +122,7 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
     if (confirmed != true) return;
 
     try {
-      await _apiService.cancelSale(sale.id);
+      await _apiService.cancelSale(sale.id!);
       _loadPendingSales();
 
       if (!mounted) return;

@@ -121,7 +121,7 @@ class ApiService {
   }
 
   /// Get sale by ID
-  Future<Sale> getSale(String id) async {
+  Future<Sale> getSale(int id) async {
     try {
       log("Fetching sale with id: $id");
       final response = await http.get(Uri.parse('$baseUrl/sales/$id'));
@@ -147,7 +147,7 @@ class ApiService {
   }
 
   /// Update sale (change status)
-  Future<Sale> updateSale(String id, Sale sale) async {
+  Future<Sale> updateSale(int id, Sale sale) async {
     try {
       log("Updating sale with id: $id");
 
@@ -159,10 +159,11 @@ class ApiService {
 
       log("Update sale response status: ${response.statusCode}");
 
-      if (response.statusCode == 200) {
-        final updatedSale = Sale.fromJson(json.decode(response.body));
-        log("Successfully updated sale with ID: ${updatedSale.id}");
-        return updatedSale;
+      // Backend 204 NoContent dönüyor (başarılı güncelleme)
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        log("Successfully updated sale with ID: $id");
+        // Backend updated sale'i döndürmüyor, biz döndürelim
+        return sale.copyWith(id: id);
       } else {
         log("Error response body: ${response.body}");
         throw Exception('Failed to update sale: ${response.statusCode}');
@@ -174,7 +175,7 @@ class ApiService {
   }
 
   /// Cancel sale (update status to cancelled)
-  Future<Sale> cancelSale(String id) async {
+  Future<Sale> cancelSale(int id) async {
     try {
       log("Cancelling sale with id: $id");
 

@@ -71,6 +71,16 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
   }
 
   Future<void> _cancelSale(Sale sale) async {
+    if (sale.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Hata: Satış ID bulunamadı'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     // İptal onayı al
     final confirmed = await showDialog<bool>(
       context: context,
@@ -99,7 +109,7 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
     if (confirmed != true) return;
 
     try {
-      await _apiService.cancelSale(sale.id);
+      await _apiService.cancelSale(sale.id!);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

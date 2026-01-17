@@ -1,6 +1,6 @@
 // lib/models/sale.dart
 class Sale {
-  final String id;
+  final int? id; // Backend'den gelecek, yeni satışlarda null olabilir
   final DateTime createdAt;
   final List<SaleItem> items;
   final double subtotal;
@@ -10,7 +10,7 @@ class Sale {
   final SaleStatus status;
 
   Sale({
-    required this.id,
+    this.id, // Artık optional
     required this.createdAt,
     required this.items,
     required this.subtotal,
@@ -20,8 +20,31 @@ class Sale {
     this.status = SaleStatus.completed,
   });
 
+  // CopyWith metodu
+  Sale copyWith({
+    int? id,
+    DateTime? createdAt,
+    List<SaleItem>? items,
+    double? subtotal,
+    double? cardCommission,
+    double? total,
+    PaymentMethod? paymentMethod,
+    SaleStatus? status,
+  }) {
+    return Sale(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      items: items ?? this.items,
+      subtotal: subtotal ?? this.subtotal,
+      cardCommission: cardCommission ?? this.cardCommission,
+      total: total ?? this.total,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      status: status ?? this.status,
+    );
+  }
+
   factory Sale.fromJson(Map<String, dynamic> json) => Sale(
-        id: json['id'].toString(),
+        id: json['id'] as int?,
         createdAt: DateTime.parse(json['createdAt']),
         items: (json['items'] as List<dynamic>?)
                 ?.map((item) => SaleItem.fromJson(item))
@@ -40,16 +63,24 @@ class Sale {
         ),
       );
 
-  Map<String, dynamic> toJson() => {
-        'id': int.tryParse(id) ?? 0,
-        'createdAt': createdAt.toIso8601String(),
-        'items': items.map((item) => item.toJson()).toList(),
-        'subtotal': subtotal,
-        'cardCommission': cardCommission,
-        'total': total,
-        'paymentMethod': paymentMethod.name,
-        'status': status.name,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      'createdAt': createdAt.toIso8601String(),
+      'items': items.map((item) => item.toJson()).toList(),
+      'subtotal': subtotal,
+      'cardCommission': cardCommission,
+      'total': total,
+      'paymentMethod': paymentMethod.name,
+      'status': status.name,
+    };
+
+    // ID sadece varsa ekle (güncelleme için)
+    if (id != null) {
+      json['id'] = id!;
+    }
+
+    return json;
+  }
 }
 
 class SaleItem {

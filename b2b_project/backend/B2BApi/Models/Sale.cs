@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace B2BApi.Models;
 
@@ -42,6 +43,7 @@ public class SaleItem
     public int SaleId { get; set; }
 
     [ForeignKey("SaleId")]
+    [JsonIgnore]
     public Sale? Sale { get; set; }
 
     [Required]
