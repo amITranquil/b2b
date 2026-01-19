@@ -58,7 +58,7 @@ class _B2BPosAppState extends State<B2BPosApp> {
       // Light Theme
       theme: ThemeData.light(useMaterial3: true).copyWith(
         primaryColor: Colors.blue[700],
-        cardTheme: const CardTheme(
+        cardTheme: const CardThemeData(
           color: Colors.white,
           elevation: 2,
         ),
@@ -73,7 +73,7 @@ class _B2BPosAppState extends State<B2BPosApp> {
       // Dark Theme
       darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
         primaryColor: Colors.blue[400],
-        cardTheme: const CardTheme(
+        cardTheme: const CardThemeData(
           color: Color(0xFF1E1E1E),
         ),
         scaffoldBackgroundColor: const Color(0xFF121212),

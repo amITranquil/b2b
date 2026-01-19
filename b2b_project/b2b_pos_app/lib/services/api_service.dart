@@ -38,7 +38,8 @@ class ApiService {
       }
 
       final response = await http.get(
-        Uri.parse('$baseUrl/products/search/${Uri.encodeComponent(searchTerm)}'),
+        Uri.parse(
+            '$baseUrl/products/search/${Uri.encodeComponent(searchTerm)}'),
       );
 
       log("Search products API response status: ${response.statusCode}");
@@ -57,7 +58,6 @@ class ApiService {
   }
 
   // ============ SALES METHODS ============
-  // TODO: Backend implement edilince bu methodlar aktif olacak
 
   /// Create a new sale
   Future<Sale> createSale(Sale sale) async {

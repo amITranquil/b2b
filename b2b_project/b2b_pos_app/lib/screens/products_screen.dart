@@ -261,7 +261,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           color: _isListening ? Colors.red : null,
                         ),
                         tooltip: 'Sesli Ara',
-                        onPressed: _isListening ? _stopListening : _startListening,
+                        onPressed:
+                            _isListening ? _stopListening : _startListening,
                       ),
                     // Temizle butonu
                     if (_searchQuery.isNotEmpty)
@@ -395,7 +396,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
             return Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Column(
                 children: [
@@ -505,6 +507,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           children: [
             // Product info
             Expanded(
+              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -520,64 +523,113 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             ),
 
-            // Quantity controls
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.remove_circle_outline),
-                  onPressed: () {
-                    setState(() {
-                      _updateQuantity(
-                        cartItem.product.productCode,
-                        cartItem.quantity - 1,
-                      );
-                    });
-                    setModalState(() {});
-                  },
-                ),
-                Text(
-                  '${cartItem.quantity.toInt()}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            // Quantity and Unit controls
+            Expanded(
+              flex: 5,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline),
+                    onPressed: () {
+                      setState(() {
+                        _updateQuantity(
+                          cartItem.product.productCode,
+                          cartItem.quantity - 1,
+                        );
+                      });
+                      setModalState(() {});
+                    },
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add_circle_outline),
-                  onPressed: () {
-                    setState(() {
-                      _updateQuantity(
-                        cartItem.product.productCode,
-                        cartItem.quantity + 1,
-                      );
-                    });
-                    setModalState(() {});
-                  },
-                ),
-              ],
+                  SizedBox(
+                    width: 60,
+                    child: TextField(
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      textAlign: TextAlign.center,
+                      controller: TextEditingController(
+                          text: cartItem.quantity % 1 == 0
+                              ? cartItem.quantity.toInt().toString()
+                              : cartItem.quantity.toString())
+                        ..selection = TextSelection.fromPosition(TextPosition(
+                            offset: (cartItem.quantity % 1 == 0
+                                    ? cartItem.quantity.toInt().toString()
+                                    : cartItem.quantity.toString())
+                                .length)),
+                      onChanged: (value) {
+                        final newQuantity = double.tryParse(value);
+                        if (newQuantity != null) {
+                          setState(() {
+                            _updateQuantity(
+                                cartItem.product.productCode, newQuantity);
+                          });
+                          setModalState(() {});
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    onPressed: () {
+                      setState(() {
+                        _updateQuantity(
+                          cartItem.product.productCode,
+                          cartItem.quantity + 1,
+                        );
+                      });
+                      setModalState(() {});
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  DropdownButton<String>(
+                    value: cartItem.unit,
+                    underline: Container(),
+                    items: ['adet', 'metre', 'litre', 'kg', 'paket', 'kutu']
+                        .map((unit) => DropdownMenuItem(
+                              value: unit,
+                              child: Text(unit),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          cartItem.unit = value;
+                        });
+                        setModalState(() {});
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
 
-            // Total
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  numberFormat.format(cartItem.total),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            // Total and Delete
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    numberFormat.format(cartItem.total),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    setState(() {
-                      _removeFromCart(cartItem.product.productCode);
-                    });
-                    setModalState(() {});
-                  },
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        _removeFromCart(cartItem.product.productCode);
+                      });
+                      setModalState(() {});
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -590,10 +642,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
 class CartItem {
   final Product product;
   double quantity;
+  String unit;
 
   CartItem({
     required this.product,
     required this.quantity,
+    this.unit = 'adet',
   });
 
   double get total => product.salePrice * quantity;
